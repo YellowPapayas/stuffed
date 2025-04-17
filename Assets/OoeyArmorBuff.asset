@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb72fcda110a2a540b759644fa460df1, type: 3}
+  m_Name: OoeyArmorBuff
+  m_EditorClassIdentifier: 
+  abilityName: Coconut Armor
+  abilityImage: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  abilityDescription: Grants <color=green>{0}</color> <b>{1}</b> to one ally for
+    <color=yellow>{2}</color> rounds
+  targetType: 1
+  energyCost: 2
+  critEffect: {fileID: 11400000, guid: 812a2894bd022a84da02cc1543a6f7e7, type: 2}
+  statType: 2
+  amount: 20
+  rounds: 3
