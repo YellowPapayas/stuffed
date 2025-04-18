@@ -17,13 +17,16 @@ public class DamageAbility : Ability
         return base.FormatDescription() + "\n" + string.Format(abilityDescription, Mathf.FloorToInt(attackRatio*100));
     }
 
-    public override string ActionText(Character user, Character target)
+    public override void ActionText(Character user, Character target, bool isCrit)
     {
+        string output;
         if (accuracy > target.currDodge) {
-            return $"<color=red>{target.calcArmorDamage(Mathf.FloorToInt(user.GetStat(StatType.Attack) * attackRatio))}</color>";
+            output = $"<color=red>{target.calcArmorDamage(Mathf.FloorToInt(user.GetStat(StatType.Attack) * attackRatio))}</color>";
         } else
         {
-            return $"<color=green>DODGED</color>";
+            output = $"<color=green>DODGED</color>";
         }
+        target.DisplayActionPerm(output);
+        base.ActionText(user, target, isCrit);
     }
 }

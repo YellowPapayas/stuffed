@@ -10,4 +10,6 @@ public abstract class CritEffect : ScriptableObject
     {
         return $"<color=#66CCCC>{critCost} CRIT</color>";
     }
+
+    public abstract void ActionText(Character user, Character target);
 }

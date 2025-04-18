@@ -32,7 +32,13 @@ public abstract class Ability : ScriptableObject
         return FormatDescription() + "\n<color=#66AADD>" + critEffect.AddDescription() + "</color>";
     }
 
-    public abstract string ActionText(Character user, Character target);
+    public virtual void ActionText(Character user, Character target, bool isCrit)
+    {
+        if (isCrit)
+        {
+            critEffect.ActionText(user, target);
+        }
+    }
 
     public bool Equals(Ability other)
     {

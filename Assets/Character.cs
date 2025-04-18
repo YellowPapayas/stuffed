@@ -24,6 +24,7 @@ public class Character : MonoBehaviour, IClickable
     public List<StatModifier> statMods;
 
     BoxCollider2D coll;
+    Character targetedBy;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -185,6 +186,26 @@ public class Character : MonoBehaviour, IClickable
         actionText.DisplayText(action, 300);
     }
 
+    public void DisplayActionPerm(string perm)
+    {
+        actionText.PermText(perm);
+    }
+
+    public void ActionAdd(string add)
+    {
+        actionText.AddText(add);
+    }
+
+    public void ActionDuration(int duration)
+    {
+        actionText.SetDuration(duration);
+    }
+
+    public void ActionOff()
+    {
+        actionText.PermOff();
+    }
+
     public void OnLeftClick()
     {
         // do nothing
@@ -198,16 +219,16 @@ public class Character : MonoBehaviour, IClickable
     public void OnHover()
     {
         target.SetActive(true);
-        string preview = bm.PreviewAbility(this);
-        if (preview != "")
-        {
-            actionText.PermText(preview);
-        }
+        targetedBy = bm.PreviewAbility(this);
     }
 
     public void OffHover()
     {
         target.SetActive(false);
-        actionText.PermOff();
+        ActionOff();
+        if(targetedBy != null)
+        {
+            targetedBy.ActionOff();
+        }
     }
 }

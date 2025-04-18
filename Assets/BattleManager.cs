@@ -25,8 +25,11 @@ public class BattleManager : MonoBehaviour
         click = GameObject.Find("ClickHandler").GetComponent<ClickHandle>();
         warning = GameObject.Find("Warning Text").GetComponent<TemporaryText>();
         abilityDescription = GameObject.Find("Description").GetComponent<DescriptionText>();
+        abilityDescription.Setup();
         energyDisplay = GameObject.Find("Energy Display").GetComponent<DescriptionText>();
+        energyDisplay.Setup();
         critDisplay = GameObject.Find("Crit Display").GetComponent<DescriptionText>();
+        critDisplay.Setup();
 
         characters = new List<Character>();
         leftSide = new List<Character>();
@@ -69,6 +72,22 @@ public class BattleManager : MonoBehaviour
         foreach (Character c in toHighlight)
         {
             c.SetHighlight(show);
+        }
+    }
+
+    void ClearActionText(List<Character> toClear)
+    {
+        foreach (Character c in toClear)
+        {
+            c.ActionOff();
+        }
+    }
+
+    void SetActionDuration(List<Character> toSet, int duration)
+    {
+        foreach (Character c in toSet)
+        {
+            c.ActionDuration(duration);
         }
     }
 
@@ -154,7 +173,8 @@ public class BattleManager : MonoBehaviour
             {
                 if (!pendingCrit || pendingChar.currCrit >= pendingAbility.critEffect.critCost)
                 {
-                    target.DisplayAbilityAction(PreviewAbility(target));
+                    PreviewAbility(target);
+                    SetActionDuration(characters, 300);
                     pendingAbility.Activate(pendingChar, target, pendingCrit);
                     pendingChar.energy -= pendingAbility.energyCost;
                     energyDisplay.SetDescription(pendingChar.energy + " / " + pendingChar.stats.maxEnergy);
@@ -166,11 +186,16 @@ public class BattleManager : MonoBehaviour
                 } else
                 {
                     warning.DisplayText("<color=#AA0000>Not enough crit!</color>", 300);
+                    ClearActionText(characters);
                 }
             } else
             {
                 warning.DisplayText("<color=#AA0000>Not enough energy!</color>", 300);
+                ClearActionText(characters);
             }
+        } else
+        {
+            ClearActionText(characters);
         }
         pendingAbility = null;
         StopTargeting();
@@ -184,15 +209,14 @@ public class BattleManager : MonoBehaviour
         click.selected = false;
     }
 
-    public string PreviewAbility(Character ch)
+    public Character PreviewAbility(Character ch)
     {
         if(pendingChar != null && pendingAbility != null && CheckTarget(ch) && pendingChar.energy >= pendingAbility.energyCost)
         {
-            return pendingAbility.ActionText(pendingChar, ch);
-        } else
-        {
-            return "";
+            pendingAbility.ActionText(pendingChar, ch, pendingCrit);
+            return pendingChar;
         }
+        return null;
     }
 
     bool TargetTeam()

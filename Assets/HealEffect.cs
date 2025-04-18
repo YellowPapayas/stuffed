@@ -14,4 +14,9 @@ public class HealEffect : CritEffect
     {
         return base.AddDescription() + $"\nHeal the user for {(int) (percentage*100)}% of their max health";
     }
+
+    public override void ActionText(Character user, Character target)
+    {
+        user.ActionAdd($"<color=#55DD55>+{percentage * user.stats.maxHealth}</color>");
+    }
 }

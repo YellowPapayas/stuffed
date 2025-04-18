@@ -6,8 +6,7 @@ public class DescriptionText : MonoBehaviour
 {
     TMP_Text desc;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public void Setup()
     {
         desc = GetComponent<TMP_Text>();
     }

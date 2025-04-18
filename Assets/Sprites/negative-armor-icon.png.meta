@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 6250e1fd577478d499e94bfb782a5794
+guid: 27b0832978125134692cf0a6da35ce81
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1611231882768128851
-    second: armor-icon_0
+      213: 5034280711657175865
+    second: negative-armor-icon_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: armor-icon_0
+      name: negative-armor-icon_0
       rect:
         serializedVersion: 2
         x: 0
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: da462d8a321c3a9e0800000000000000
-      internalID: -1611231882768128851
+      spriteID: 93b3ded62ab5dd540800000000000000
+      internalID: 5034280711657175865
       vertices: []
       indices: 
       edges: []

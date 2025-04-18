@@ -408,6 +408,7 @@ MonoBehaviour:
   health: 30
   energy: 0
   currDodge: 0
+  currCrit: 0
 --- !u!61 &4579378499426913109
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1124,7 +1125,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -1611231882768128851, guid: 6250e1fd577478d499e94bfb782a5794, type: 3}
+  m_Sprite: {fileID: 4129262824806234600, guid: 95eb270370d6e964589eaf46b5574c82, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

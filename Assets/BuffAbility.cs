@@ -20,8 +20,9 @@ public class BuffAbility : Ability
         return base.FormatDescription() + "\n" + string.Format(abilityDescription, amount, statType, rounds);
     }
 
-    public override string ActionText(Character user, Character target)
+    public override void ActionText(Character user, Character target, bool isCrit)
     {
-        return $"<color=#009900>+{statType}</color>";
+        target.DisplayActionPerm($"<color=#009900>+{statType}</color>");
+        base.ActionText(user, target, isCrit);
     }
 }
