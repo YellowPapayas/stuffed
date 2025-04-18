@@ -57,6 +57,7 @@ public class StatusBar : MonoBehaviour
             if (icon != null)
             {
                 icon.SetActive(true);
+                icon.GetComponent<IconHover>().UpdateView();
             }
         }
     }

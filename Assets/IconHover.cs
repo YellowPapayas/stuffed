@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using TMPro;
 
 public class IconHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
@@ -8,19 +9,38 @@ public class IconHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     GameObject hoverBG;
     TMP_Text hoverText;
     Character owner;
+    public Sprite posIcon;
+    public Sprite negIcon;
+
+    int total = 0;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         hoverText = transform.Find("Info Text Background/Status Info Text").gameObject.GetComponent<TMP_Text>();
         hoverBG = transform.Find("Info Text Background").gameObject;
-        owner = transform.parent.parent.parent.gameObject.GetComponent<Character>();
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public void UpdateView()
+    {
+        total = 0;
+        owner = transform.parent.parent.parent.gameObject.GetComponent<Character>();
+
+        foreach (StatModifier sm in owner.statMods)
+        {
+            if (sm.type == statType)
+            {
+                total += sm.amount;
+            }
+        }
+        Image display = GetComponent<Image>();
+        display.sprite = (total > 0) ? posIcon : negIcon;
     }
 
     string GetStatsDisplay()

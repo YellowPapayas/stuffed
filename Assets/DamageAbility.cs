@@ -8,8 +8,11 @@ public class DamageAbility : Ability
 
     public override void Activate(Character user, Character target, bool isCrit)
     {
-        target.OnHit(Mathf.FloorToInt(user.GetStat(StatType.Attack) * attackRatio), accuracy);
-        base.Activate(user, target, isCrit);
+        bool didHit = target.OnHit(Mathf.FloorToInt(user.GetStat(StatType.Attack) * attackRatio), accuracy);
+        if (didHit)
+        {
+            base.Activate(user, target, isCrit);
+        }
     }
 
     public override string FormatDescription()
@@ -19,14 +22,20 @@ public class DamageAbility : Ability
 
     public override void ActionText(Character user, Character target, bool isCrit)
     {
+        bool willHit;
         string output;
         if (accuracy > target.currDodge) {
             output = $"<color=red>{target.calcArmorDamage(Mathf.FloorToInt(user.GetStat(StatType.Attack) * attackRatio))}</color>";
+            willHit = true;
         } else
         {
             output = $"<color=green>DODGED</color>";
+            willHit = false;
         }
         target.DisplayActionPerm(output);
-        base.ActionText(user, target, isCrit);
+        if (willHit)
+        {
+            base.ActionText(user, target, isCrit);
+        }
     }
 }

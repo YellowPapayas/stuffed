@@ -1,28 +1,49 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "NewBuffAbility", menuName = "Abilities/Buff")]
 public class BuffAbility : Ability
 {
-    public StatType statType;
-    public int amount;
-    public int rounds;
+    public List<StatModifier> buffs;
 
     public override void Activate(Character user, Character target, bool isCrit)
     {
-        StatModifier statMod = new StatModifier(statType, amount, rounds);
-        target.AddStatus(statMod);
+        foreach (StatModifier statMod in buffs)
+        {
+            target.AddStatus(statMod.DeepCopy());
+        }
 
         base.Activate(user, target, isCrit);
     }
 
     public override string FormatDescription()
     {
-        return base.FormatDescription() + "\n" + string.Format(abilityDescription, amount, statType, rounds);
+        string listBuffs = "";
+        for (int i = 0; i < buffs.Count; i++)
+        {
+            if (i == buffs.Count - 1 && i != 0)
+            {
+                listBuffs += " and ";
+            }
+            StatModifier statMod = buffs[i];
+            listBuffs += $"<color=green>+{statMod.amount}</color> <b>{statMod.type}</b> for <color=yellow>{statMod.rounds}</color> rounds";
+            if (i < buffs.Count - 1 && buffs.Count > 2)
+            {
+                listBuffs += ", ";
+            }
+        }
+        return base.FormatDescription() + "\n" + string.Format(abilityDescription, listBuffs);
     }
 
     public override void ActionText(Character user, Character target, bool isCrit)
     {
-        target.DisplayActionPerm($"<color=#009900>+{statType}</color>");
+        string action = "";
+        foreach (StatModifier statMod in buffs)
+        {
+            action += $"<color=#009900>+{statMod.type}</color>";
+            action += "\n";
+        }
+        target.DisplayActionPerm(action);
         base.ActionText(user, target, isCrit);
     }
 }

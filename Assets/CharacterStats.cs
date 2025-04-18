@@ -34,6 +34,7 @@ public enum StatType
     Dodge
 }
 
+[System.Serializable]
 public class StatModifier
 {
     public StatType type;
@@ -43,5 +44,10 @@ public class StatModifier
     public StatModifier(StatType st, int am, int ro)
     {
         type = st; amount = am; rounds = ro;
+    }
+
+    public StatModifier DeepCopy()
+    {
+        return new StatModifier(type, amount, rounds);
     }
 }

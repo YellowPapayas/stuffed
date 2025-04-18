@@ -62,6 +62,12 @@ public class Character : MonoBehaviour, IClickable
         statusBar.UpdateView();
     }
 
+    public void RemoveStatusIndex(int index)
+    {
+        statMods.RemoveAt(index);
+        statusBar.UpdateView();
+    }
+
     public int GetStat(StatType st)
     {
         int baseVal = stats.GetStat(st);
@@ -78,8 +84,7 @@ public class Character : MonoBehaviour, IClickable
                 statMods[i].rounds--;
                 if (statMods[i].rounds <= 0)
                 {
-                    statMods.RemoveAt(i);
-                    statusBar.UpdateView();
+                    RemoveStatusIndex(i);
                 }
             }
         }
@@ -104,9 +109,9 @@ public class Character : MonoBehaviour, IClickable
             if (statMods[i].amount < 0)
             {
                 statMods[i].rounds--;
-                if (statMods[i].rounds <= 0 && statMods[i].amount < 0)
+                if (statMods[i].rounds <= 0)
                 {
-                    statMods.RemoveAt(i);
+                    RemoveStatusIndex(i);
                 }
             }
         }
@@ -129,16 +134,18 @@ public class Character : MonoBehaviour, IClickable
         justDodged = false;
     }
 
-    public void OnHit(int damage, int acc)
+    public bool OnHit(int damage, int acc)
     {
         int armorDmg = calcArmorDamage(damage);
         if (acc > currDodge)
         {
             Damage(armorDmg);
+            return true;
         } else
         {
             justDodged = true;
             currDodge -= acc;
+            return false;
         }
     }
 
