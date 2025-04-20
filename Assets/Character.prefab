@@ -1149,7 +1149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   statType: 2
-  posIcon: {fileID: 4129262824806234600, guid: 95eb270370d6e964589eaf46b5574c82, type: 3}
+  posIcon: {fileID: -1611231882768128851, guid: ba7c6819c22583248b4c35143dceacf8, type: 3}
   negIcon: {fileID: 5034280711657175865, guid: 27b0832978125134692cf0a6da35ce81, type: 3}
 --- !u!1 &8276682493954491348
 GameObject:

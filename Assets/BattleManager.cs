@@ -10,6 +10,7 @@ public class BattleManager : MonoBehaviour
     DescriptionText critDisplay;
 
     ClickHandle click;
+    LineManager lm;
     TemporaryText warning;
 
     List<Character> characters;
@@ -23,6 +24,7 @@ public class BattleManager : MonoBehaviour
     void Start()
     {
         click = GameObject.Find("ClickHandler").GetComponent<ClickHandle>();
+        lm = GetComponent<LineManager>();
         warning = GameObject.Find("Warning Text").GetComponent<TemporaryText>();
         abilityDescription = GameObject.Find("Description").GetComponent<DescriptionText>();
         abilityDescription.Setup();
@@ -173,9 +175,13 @@ public class BattleManager : MonoBehaviour
             {
                 if (!pendingCrit || pendingChar.currCrit >= pendingAbility.critEffect.critCost)
                 {
+                    List<Character> targets = GetTargets(target);
                     PreviewAbility(target);
                     SetActionDuration(characters, 300);
-                    pendingAbility.Activate(pendingChar, target, pendingCrit);
+                    foreach (Character ch in targets)
+                    {
+                        pendingAbility.Activate(pendingChar, ch, pendingCrit);
+                    }
                     pendingChar.energy -= pendingAbility.energyCost;
                     energyDisplay.SetDescription(pendingChar.energy + " / " + pendingChar.stats.maxEnergy);
                     if (pendingCrit)
@@ -209,12 +215,18 @@ public class BattleManager : MonoBehaviour
         click.selected = false;
     }
 
-    public Character PreviewAbility(Character ch)
+    public List<Character> PreviewAbility(Character ch)
     {
         if(pendingChar != null && pendingAbility != null && CheckTarget(ch) && pendingChar.energy >= pendingAbility.energyCost)
         {
-            pendingAbility.ActionText(pendingChar, ch, pendingCrit);
-            return pendingChar;
+            List<Character> toPreview = GetTargets(ch);
+            foreach (Character tar in toPreview)
+            {
+                pendingAbility.ActionText(pendingChar, tar, pendingCrit);
+            }
+
+            toPreview.Add(pendingChar);
+            return toPreview;
         }
         return null;
     }
@@ -225,9 +237,11 @@ public class BattleManager : MonoBehaviour
         {
             case TargetType.SingleEnemy:
             case TargetType.MultiEnemy:
+            case TargetType.EnemyParty:
                 return !pendingChar.teamSide;
             case TargetType.SingleAlly:
             case TargetType.MultiAlly:
+            case TargetType.AllyParty:
                 return pendingChar.teamSide;
             default:
                 return false;
@@ -239,12 +253,34 @@ public class BattleManager : MonoBehaviour
         switch (pendingAbility.targetType) {
             case TargetType.SingleEnemy:
             case TargetType.MultiEnemy:
+            case TargetType.EnemyParty:
                 return pendingChar.teamSide != target.teamSide;
             case TargetType.SingleAlly:
             case TargetType.MultiAlly:
+            case TargetType.AllyParty:
                 return pendingChar.teamSide == target.teamSide;
             default:
                 return false;
+        }
+    }
+
+    List<Character> GetTargets(Character target)
+    {
+        switch (pendingAbility.targetType)
+        {
+            case TargetType.SingleEnemy:
+            case TargetType.SingleAlly:
+                List<Character> single = new List<Character>();
+                single.Add(target);
+                return single;
+            case TargetType.MultiEnemy:
+            case TargetType.MultiAlly:
+                return lm.InSameLine(target);
+            case TargetType.EnemyParty:
+            case TargetType.AllyParty:
+                return GetTeam(target.teamSide);
+            default:
+                return characters;
         }
     }
 

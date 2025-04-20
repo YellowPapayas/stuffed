@@ -51,5 +51,7 @@ public enum TargetType
     SingleEnemy,
     SingleAlly,
     MultiEnemy,
-    MultiAlly
+    MultiAlly,
+    EnemyParty,
+    AllyParty
 }
