@@ -8,6 +8,7 @@ public class BattleManager : MonoBehaviour
     DescriptionText abilityDescription;
     DescriptionText energyDisplay;
     DescriptionText critDisplay;
+    TurnOrderDisplay turnOrderDisplay;
 
     ClickHandle click;
     LineManager lm;
@@ -32,6 +33,7 @@ public class BattleManager : MonoBehaviour
         energyDisplay.Setup();
         critDisplay = GameObject.Find("Crit Display").GetComponent<DescriptionText>();
         critDisplay.Setup();
+        turnOrderDisplay = GameObject.Find("Turn Order").GetComponent<TurnOrderDisplay>();
 
         characters = new List<Character>();
         leftSide = new List<Character>();
@@ -56,6 +58,8 @@ public class BattleManager : MonoBehaviour
                 rightSide.Add(c);
             }
         }
+
+        turnOrderDisplay.Setup(characters);
     }
 
     List<Character> GetTeam(bool teamSide)
@@ -110,6 +114,8 @@ public class BattleManager : MonoBehaviour
             turnQueue.Enqueue(highest);
             toAdd.Remove(highest);
         }
+
+        turnOrderDisplay.AddAllIcons(turnQueue);
     }
 
     void NextRound()
@@ -128,6 +134,8 @@ public class BattleManager : MonoBehaviour
                 ch.OnGeneralTurnEnd();
             }
             pendingChar = null;
+
+            turnOrderDisplay.RemoveTopTurn();
         }
         if (turnQueue.Count > 0)
         {

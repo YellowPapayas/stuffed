@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,12 +11,16 @@ public class Character : MonoBehaviour, IClickable
     TemporaryText actionText;
     StatusBar statusBar;
 
+    Color highlightColor = new Color(228 / 255f, 1f, 0f, 120 / 255f);
+    Color turnColor = new Color(120 / 255f, 180 / 255f, 120 / 255f, 90 / 255f);
+
     BattleManager bm;
 
     public CharacterStats stats;
     public List<Ability> abilities;
     public bool teamSide;
     bool justDodged = false;
+    bool isTurn = false;
 
     public int health;
     public int energy;
@@ -53,7 +58,24 @@ public class Character : MonoBehaviour, IClickable
 
     public void SetHighlight(bool show)
     {
-        highlight.SetActive(show);
+        Image light = highlight.GetComponent<Image>();
+        if (isTurn)
+        {
+            highlight.SetActive(true);
+            if (show)
+            {
+                light.color = highlightColor;
+            }
+            else
+            {
+                light.color = turnColor;
+            }
+        }
+        else
+        {
+            light.color = highlightColor;
+            highlight.SetActive(show);
+        }
     }
 
     public void AddStatus(StatModifier statMod)
@@ -77,6 +99,9 @@ public class Character : MonoBehaviour, IClickable
 
     public void OnTurnStart()
     {
+        isTurn = true;
+        SetHighlight(false);
+
         for (int i = statMods.Count - 1; i >= 0; i--)
         {
             if (statMods[i].amount >= 0)
@@ -104,6 +129,9 @@ public class Character : MonoBehaviour, IClickable
 
     public void OnTurnEnd()
     {
+        isTurn = false;
+        SetHighlight(false);
+
         for (int i = statMods.Count - 1; i >= 0; i--)
         {
             if (statMods[i].amount < 0)
