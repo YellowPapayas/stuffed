@@ -49,7 +49,6 @@ public class TemporaryText : MonoBehaviour
 
     public void PermOff()
     {
-        text.text = "";
         perm = false;
     }
 
@@ -63,6 +62,7 @@ public class TemporaryText : MonoBehaviour
 
     public void SetDuration(int duration)
     {
+        text.gameObject.SetActive(true);
         frames = duration;
         perm = false;
     }

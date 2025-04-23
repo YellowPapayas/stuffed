@@ -3,6 +3,7 @@ using UnityEngine;
 public class ClickHandle : MonoBehaviour
 {
     public bool selected = false;
+    public bool paused = false;
     BattleManager bm;
     IClickable currHover = null;
 
@@ -15,20 +16,30 @@ public class ClickHandle : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        HandleHover();
-        if (Input.GetMouseButtonDown(0))
+        if (!paused)
         {
-            if (!selected)
+            HandleHover();
+            if (Input.GetMouseButtonDown(0))
             {
-                HandleClick(true);
-            } else
-            {
-                HandleSelectClick();
+                if (!selected)
+                {
+                    HandleClick(true);
+                }
+                else
+                {
+                    HandleSelectClick();
+                }
             }
-        }
-        else if (Input.GetMouseButtonDown(1))
+            else if (Input.GetMouseButtonDown(1))
+            {
+                HandleClick(false);
+            }
+        } else
         {
-            HandleClick(false);
+            if (currHover != null)
+            {
+                currHover.OffHover();
+            }
         }
     }
 

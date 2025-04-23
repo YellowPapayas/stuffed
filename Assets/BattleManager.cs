@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class BattleManager : MonoBehaviour
 {
     Character pendingChar;
-    Ability pendingAbility;
+    public Ability pendingAbility;
     DescriptionText abilityDescription;
     DescriptionText energyDisplay;
     DescriptionText critDisplay;
@@ -12,6 +12,7 @@ public class BattleManager : MonoBehaviour
 
     ClickHandle click;
     LineManager lm;
+    DisplayManager dm;
     TemporaryText warning;
 
     List<Character> characters;
@@ -26,6 +27,7 @@ public class BattleManager : MonoBehaviour
     {
         click = GameObject.Find("ClickHandler").GetComponent<ClickHandle>();
         lm = GetComponent<LineManager>();
+        dm = GetComponent<DisplayManager>();
         warning = GameObject.Find("Warning Text").GetComponent<TemporaryText>();
         abilityDescription = GameObject.Find("Description").GetComponent<DescriptionText>();
         abilityDescription.Setup();
@@ -86,14 +88,6 @@ public class BattleManager : MonoBehaviour
         foreach (Character c in toClear)
         {
             c.ActionOff();
-        }
-    }
-
-    void SetActionDuration(List<Character> toSet, int duration)
-    {
-        foreach (Character c in toSet)
-        {
-            c.ActionDuration(duration);
         }
     }
 
@@ -183,19 +177,19 @@ public class BattleManager : MonoBehaviour
             {
                 if (!pendingCrit || pendingChar.currCrit >= pendingAbility.critEffect.critCost)
                 {
+                    ClearActionText(characters);
                     List<Character> targets = GetTargets(target);
-                    PreviewAbility(target);
-                    SetActionDuration(characters, 300);
-                    foreach (Character ch in targets)
-                    {
-                        pendingAbility.Activate(pendingChar, ch, pendingCrit);
-                    }
                     pendingChar.energy -= pendingAbility.energyCost;
                     energyDisplay.SetDescription(pendingChar.energy + " / " + pendingChar.stats.maxEnergy);
                     if (pendingCrit)
                     {
                         pendingChar.currCrit -= pendingAbility.critEffect.critCost;
                         critDisplay.SetDescription(pendingChar.currCrit + "");
+                    }
+                    StartCoroutine(dm.ShowAbilityUse(targets));
+                    foreach (Character ch in targets)
+                    {
+                        pendingAbility.Activate(pendingChar, ch, pendingCrit);
                     }
                 } else
                 {
@@ -225,16 +219,10 @@ public class BattleManager : MonoBehaviour
 
     public List<Character> PreviewAbility(Character ch)
     {
-        if(pendingChar != null && pendingAbility != null && CheckTarget(ch) && pendingChar.energy >= pendingAbility.energyCost)
+        if(pendingChar != null && pendingAbility != null && CheckTarget(ch))
         {
-            List<Character> toPreview = GetTargets(ch);
-            foreach (Character tar in toPreview)
-            {
-                pendingAbility.ActionText(pendingChar, tar, pendingCrit);
-            }
-
-            toPreview.Add(pendingChar);
-            return toPreview;
+            List<Character> affected = GetTargets(ch);
+            return dm.PreviewAbility(pendingChar, pendingAbility, affected, pendingCrit);
         }
         return null;
     }

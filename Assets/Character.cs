@@ -37,7 +37,7 @@ public class Character : MonoBehaviour, IClickable
         health = stats.maxHealth;
         coll = GetComponent<BoxCollider2D>();
         
-        bar = transform.Find("Canvas").Find("Healthbar").gameObject.GetComponent<Healthbar>();
+        bar = transform.Find("Canvas").Find("Backbar").Find("Healthbar").gameObject.GetComponent<Healthbar>();
         highlight = transform.Find("Canvas").Find("Highlight").gameObject;
         highlight.SetActive(false);
         target = transform.Find("Canvas").Find("Target").gameObject;
