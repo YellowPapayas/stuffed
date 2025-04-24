@@ -84,6 +84,24 @@ public class Character : MonoBehaviour, IClickable
         statusBar.UpdateView();
     }
 
+    public bool OnDebuffsHit(List<StatModifier> debuffs, int acc)
+    {
+        if (acc > currDodge)
+        {
+            foreach (StatModifier statMod in debuffs)
+            {
+                AddStatus(statMod.DeepCopy());
+            }
+            return true;
+        }
+        else
+        {
+            justDodged = true;
+            currDodge -= acc;
+            return false;
+        }
+    }
+
     public void RemoveStatusIndex(int index)
     {
         statMods.RemoveAt(index);

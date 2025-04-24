@@ -44,6 +44,10 @@ public class TemporaryText : MonoBehaviour
             {
                 PermText(txt);
             }
+        } else
+        {
+            text.gameObject.SetActive(true);
+            perm = true;
         }
     }
 

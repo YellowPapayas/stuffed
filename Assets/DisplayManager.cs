@@ -17,7 +17,6 @@ public class DisplayManager : MonoBehaviour
     {
         overlayCanvas = GameObject.Find("Main Camera").transform.Find("Overlay").gameObject;
         abilityText = overlayCanvas.transform.Find("Ability Name").gameObject.GetComponent<TMP_Text>();
-        click = GameObject.Find("ClickHandler").GetComponent<ClickHandle>();
         overlayCanvas.SetActive(false);
 
         bm = gameObject.GetComponent<BattleManager>();
@@ -27,13 +26,10 @@ public class DisplayManager : MonoBehaviour
     {
         abilityText.text = bm.pendingAbility.abilityName;
         overlayCanvas.SetActive(true);
-        click.paused = true;
 
         yield return new WaitForSeconds(1.1f);
 
-        click.paused = false;
         overlayCanvas.SetActive(false);
-        SetActionDuration(targets, 500);
 
     }
 
@@ -43,10 +39,11 @@ public class DisplayManager : MonoBehaviour
         {
             pendingAbility.ActionText(user, tar, pendingCrit);
         }
+        toPreview.Add(user);
         return toPreview;
     }
 
-    void SetActionDuration(List<Character> toSet, int duration)
+    public void SetActionDuration(List<Character> toSet, int duration)
     {
         foreach (Character c in toSet)
         {

@@ -12,6 +12,7 @@ public class CharacterStats : ScriptableObject
 
     public int armor;
     public int dodge;
+    public int accuracy;
 
     public int GetStat(StatType st)
     {
@@ -21,6 +22,7 @@ public class CharacterStats : ScriptableObject
             case StatType.Armor: return armor;
             case StatType.Initiative: return initiative;
             case StatType.Dodge: return dodge;
+            case StatType.Accuracy: return accuracy;
             default: return 0;
         }
     }
@@ -31,7 +33,8 @@ public enum StatType
     Attack,
     Initiative,
     Armor,
-    Dodge
+    Dodge,
+    Accuracy
 }
 
 [System.Serializable]

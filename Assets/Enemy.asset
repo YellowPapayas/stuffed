@@ -20,3 +20,4 @@ MonoBehaviour:
   crit: 1
   armor: 0
   dodge: 2
+  accuracy: 1

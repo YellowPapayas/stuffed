@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 public class BattleManager : MonoBehaviour
 {
@@ -169,7 +170,7 @@ public class BattleManager : MonoBehaviour
         click.selected = true;
     }
 
-    public void SelectTarget(Character target)
+    public IEnumerator SelectTarget(Character target)
     {
         if (CheckTarget(target))
         {
@@ -186,11 +187,17 @@ public class BattleManager : MonoBehaviour
                         pendingChar.currCrit -= pendingAbility.critEffect.critCost;
                         critDisplay.SetDescription(pendingChar.currCrit + "");
                     }
-                    StartCoroutine(dm.ShowAbilityUse(targets));
+                    click.paused = true;
+                    StopTargeting();
+                    yield return StartCoroutine(dm.ShowAbilityUse(targets));
+                    yield return new WaitForSeconds(0.1f);
+                    dm.SetActionDuration(targets, 400);
                     foreach (Character ch in targets)
                     {
                         pendingAbility.Activate(pendingChar, ch, pendingCrit);
                     }
+                    pendingAbility = null;
+                    click.paused = false;
                 } else
                 {
                     warning.DisplayText("<color=#AA0000>Not enough crit!</color>", 300);

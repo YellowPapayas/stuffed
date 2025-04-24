@@ -6,13 +6,17 @@ public class StatusBar : MonoBehaviour
 {
     Character owner;
     GameObject armorIcon;
+    GameObject attackIcon;
+    GameObject accuracyIcon;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         owner = transform.parent.parent.GetComponent<Character>();
 
+        attackIcon = transform.Find("Attack Icon").gameObject;
         armorIcon = transform.Find("Armor Icon").gameObject;
+        accuracyIcon = transform.Find("Accuracy Icon").gameObject;
 
         ClearView();
     }
@@ -32,9 +36,11 @@ public class StatusBar : MonoBehaviour
             case StatType.Dodge:
                 return null;
             case StatType.Attack:
-                return null;
+                return attackIcon;
             case StatType.Initiative:
                 return null;
+            case StatType.Accuracy:
+                return accuracyIcon;
         }
         return null;
     }

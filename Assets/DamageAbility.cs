@@ -8,7 +8,7 @@ public class DamageAbility : Ability
 
     public override void Activate(Character user, Character target, bool isCrit)
     {
-        bool didHit = target.OnHit(Mathf.FloorToInt(user.GetStat(StatType.Attack) * attackRatio), accuracy);
+        bool didHit = target.OnHit(Mathf.FloorToInt(user.GetStat(StatType.Attack) * attackRatio), accuracy + user.stats.accuracy);
         if (didHit)
         {
             base.Activate(user, target, isCrit);
@@ -24,7 +24,7 @@ public class DamageAbility : Ability
     {
         bool willHit;
         string output;
-        if (accuracy > target.currDodge) {
+        if (accuracy + user.stats.accuracy > target.currDodge) {
             output = $"<color=red>{target.calcArmorDamage(Mathf.FloorToInt(user.GetStat(StatType.Attack) * attackRatio))}</color>";
             willHit = true;
         } else

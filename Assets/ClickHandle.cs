@@ -102,7 +102,7 @@ public class ClickHandle : MonoBehaviour
                 Character target = cast.GetComponent<Character>();
                 if (target != null)
                 {
-                    bm.SelectTarget(target);
+                    StartCoroutine(bm.SelectTarget(target));
                     return;
                 }
             }
