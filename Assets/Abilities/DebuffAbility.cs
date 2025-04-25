@@ -9,14 +9,14 @@ public class DebuffAbility : Ability
 
     public override void Activate(Character user, Character target, bool isCrit)
     {
-        bool didHit = target.OnDebuffsHit(debuffs, accuracy + user.stats.accuracy);
+        bool didHit = target.OnDebuffsHit(debuffs, accuracy + user.GetStat(StatType.Accuracy));
         if (didHit)
         {
             base.Activate(user, target, isCrit);
         }
     }
 
-    public override string FormatDescription()
+    public override string FormatDescription(Character user)
     {
         string listDebuffs = "";
         for (int i = 0; i < debuffs.Count; i++)
@@ -32,14 +32,14 @@ public class DebuffAbility : Ability
                 listDebuffs += ", ";
             }
         }
-        return base.FormatDescription() + "\n" + string.Format(abilityDescription, listDebuffs);
+        return base.FormatDescription(user) + $"\nACC: {accuracy}{user.GetStatString(StatType.Accuracy)}\n" + string.Format(abilityDescription, listDebuffs);
     }
 
     public override void ActionText(Character user, Character target, bool isCrit)
     {
         bool willHit;
         string output = "";
-        if (accuracy + user.stats.accuracy > target.currDodge)
+        if (accuracy + user.GetStat(StatType.Accuracy) > target.currDodge)
         {
             foreach (StatModifier statMod in debuffs)
             {

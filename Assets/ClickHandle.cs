@@ -23,6 +23,7 @@ public class ClickHandle : MonoBehaviour
             {
                 if (!selected)
                 {
+                    bm.lastClickedAbility = null;
                     HandleClick(true);
                 }
                 else
@@ -102,6 +103,7 @@ public class ClickHandle : MonoBehaviour
                 Character target = cast.GetComponent<Character>();
                 if (target != null)
                 {
+                    bm.lastClickedAbility = null;
                     StartCoroutine(bm.SelectTarget(target));
                     return;
                 }

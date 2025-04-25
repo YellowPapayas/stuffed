@@ -16,7 +16,7 @@ public class BuffAbility : Ability
         base.Activate(user, target, isCrit);
     }
 
-    public override string FormatDescription()
+    public override string FormatDescription(Character user)
     {
         string listBuffs = "";
         for (int i = 0; i < buffs.Count; i++)
@@ -32,7 +32,7 @@ public class BuffAbility : Ability
                 listBuffs += ", ";
             }
         }
-        return base.FormatDescription() + "\n" + string.Format(abilityDescription, listBuffs);
+        return base.FormatDescription(user) + "\n" + string.Format(abilityDescription, listBuffs);
     }
 
     public override void ActionText(Character user, Character target, bool isCrit)

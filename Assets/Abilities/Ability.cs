@@ -22,14 +22,14 @@ public abstract class Ability : ScriptableObject
         }
     }
 
-    public virtual string FormatDescription()
+    public virtual string FormatDescription(Character user)
     {
         return $"<color=#FFBB00>{energyCost} Energy</color>";
     }
 
-    public string CritDescription()
+    public string CritDescription(Character user)
     {
-        return FormatDescription() + "\n<color=#66AADD>" + critEffect.AddDescription() + "</color>";
+        return FormatDescription(user) + "\n<color=#66AADD>" + critEffect.AddDescription() + "</color>";
     }
 
     public virtual void ActionText(Character user, Character target, bool isCrit)

@@ -22,9 +22,9 @@ public class DisplayManager : MonoBehaviour
         bm = gameObject.GetComponent<BattleManager>();
     }
 
-    public IEnumerator ShowAbilityUse(List<Character> targets)
+    public IEnumerator ShowAbilityUse(Ability pendingAbility, List<Character> targets)
     {
-        abilityText.text = bm.pendingAbility.abilityName;
+        abilityText.text = pendingAbility.abilityName;
         overlayCanvas.SetActive(true);
 
         yield return new WaitForSeconds(1.1f);

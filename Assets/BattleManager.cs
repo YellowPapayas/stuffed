@@ -22,6 +22,7 @@ public class BattleManager : MonoBehaviour
     Queue<Character> turnQueue;
 
     bool pendingCrit = false;
+    public Ability lastClickedAbility = null;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -148,7 +149,7 @@ public class BattleManager : MonoBehaviour
 
     public void StartTargeting(Ability ability)
     {
-        if (ability.Equals(pendingAbility))
+        if (ability.Equals(lastClickedAbility))
         {
             pendingCrit = !pendingCrit;
         } else
@@ -157,14 +158,15 @@ public class BattleManager : MonoBehaviour
         }
 
         pendingAbility = ability;
+        lastClickedAbility = ability;
         HighlightCharacters(GetTeam(TargetTeam()), true);
         if (pendingCrit)
         {
-            abilityDescription.SetDescription(pendingAbility.CritDescription());
+            abilityDescription.SetDescription(pendingAbility.CritDescription(pendingChar));
         }
         else
         {
-            abilityDescription.SetDescription(pendingAbility.FormatDescription());
+            abilityDescription.SetDescription(pendingAbility.FormatDescription(pendingChar));
         }
 
         click.selected = true;
@@ -188,15 +190,15 @@ public class BattleManager : MonoBehaviour
                         critDisplay.SetDescription(pendingChar.currCrit + "");
                     }
                     click.paused = true;
+                    Ability saveAbility = pendingAbility;
                     StopTargeting();
-                    yield return StartCoroutine(dm.ShowAbilityUse(targets));
+                    yield return StartCoroutine(dm.ShowAbilityUse(saveAbility, targets));
                     yield return new WaitForSeconds(0.1f);
                     dm.SetActionDuration(targets, 400);
                     foreach (Character ch in targets)
                     {
-                        pendingAbility.Activate(pendingChar, ch, pendingCrit);
+                        saveAbility.Activate(pendingChar, ch, pendingCrit);
                     }
-                    pendingAbility = null;
                     click.paused = false;
                 } else
                 {
@@ -212,7 +214,6 @@ public class BattleManager : MonoBehaviour
         {
             ClearActionText(characters);
         }
-        pendingAbility = null;
         StopTargeting();
     }
 
@@ -221,6 +222,7 @@ public class BattleManager : MonoBehaviour
         HighlightCharacters(characters, false);
         abilityDescription.SetDescription("");
 
+        pendingAbility = null;
         click.selected = false;
     }
 

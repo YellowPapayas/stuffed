@@ -42,7 +42,7 @@ public class Character : MonoBehaviour, IClickable
         highlight.SetActive(false);
         target = transform.Find("Canvas").Find("Target").gameObject;
         target.SetActive(false);
-        statusBar = transform.Find("Canvas").Find("Status Bar").gameObject.GetComponent<StatusBar>();
+        statusBar = transform.Find("Overlay").Find("Status Bar").gameObject.GetComponent<StatusBar>();
         actionText = transform.Find("Overlay").Find("Action Text").gameObject.GetComponent<TemporaryText>();
 
         bm = GameObject.Find("BattleManager").GetComponent<BattleManager>();
@@ -113,6 +113,46 @@ public class Character : MonoBehaviour, IClickable
         int baseVal = stats.GetStat(st);
         int mod = statMods.Where(m => m.type == st).Sum(m => m.amount);
         return baseVal + mod;
+    }
+
+    public string GetStatString(StatType st)
+    {
+        int statamount = GetStat(st);
+        if (statamount > 0)
+        {
+            return $" <color=green>(+{statamount})</color>";
+        }
+        else if (statamount < 0)
+        {
+            return $" <color=red>({statamount})</color>";
+        }
+        else
+        {
+            return "";
+        }
+    }
+
+    public int GetModAmount(StatType st)
+    {
+        int mod = statMods.Where(m => m.type == st).Sum(m => m.amount);
+        return mod;
+    }
+
+    public string GetModString(StatType st)
+    {
+        int modamount = GetModAmount(st);
+        if (modamount > 0)
+        {
+            return $" <color=green>(+{modamount})</color>";
+        }
+        else if (modamount < 0)
+        {
+            return $" <color=red>({modamount})</color>";
+        }
+        else
+        {
+            return "";
+        }
     }
 
     public void OnTurnStart()
@@ -266,7 +306,9 @@ public class Character : MonoBehaviour, IClickable
 
     public void OnRightClick()
     {
-        // do nothing
+        StatsDisplay sd = (StatsDisplay) FindAnyObjectByType(typeof(StatsDisplay), FindObjectsInactive.Include);
+        sd.gameObject.SetActive(true);
+        sd.DisplayStats(this);
     }
 
     public void OnHover()

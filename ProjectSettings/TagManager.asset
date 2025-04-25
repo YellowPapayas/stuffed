@@ -44,5 +44,8 @@ TagManager:
   - name: Overlay
     uniqueID: 1149935435
     locked: 0
+  - name: Menu Priority
+    uniqueID: 567820175
+    locked: 0
   m_RenderingLayers:
   - Default
