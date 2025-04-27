@@ -20,6 +20,6 @@ MonoBehaviour:
   critEffect: {fileID: 11400000, guid: d459f7cf97c7369489a6f7dfe9aebce2, type: 2}
   debuffs:
   - type: 4
-    amount: -5
+    amount: -10
     rounds: 2
-  accuracy: 10
+  accuracy: 90

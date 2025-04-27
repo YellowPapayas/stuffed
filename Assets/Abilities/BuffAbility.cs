@@ -6,14 +6,10 @@ public class BuffAbility : Ability
 {
     public List<StatModifier> buffs;
 
-    public override void Activate(Character user, Character target, bool isCrit)
+    public override void AddActions()
     {
-        foreach (StatModifier statMod in buffs)
-        {
-            target.AddStatus(statMod.DeepCopy());
-        }
-
-        base.Activate(user, target, isCrit);
+        actions = new List<AbilityAction>();
+        actions.Add(new BuffAction(buffs));
     }
 
     public override string FormatDescription(Character user)
@@ -33,17 +29,5 @@ public class BuffAbility : Ability
             }
         }
         return base.FormatDescription(user) + "\n" + string.Format(abilityDescription, listBuffs);
-    }
-
-    public override void ActionText(Character user, Character target, bool isCrit)
-    {
-        string action = "";
-        foreach (StatModifier statMod in buffs)
-        {
-            action += $"<color=#009900>+{statMod.type}</color>";
-            action += "\n";
-        }
-        target.DisplayActionPerm(action);
-        base.ActionText(user, target, isCrit);
     }
 }

@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: OoeyHealEffect
   m_EditorClassIdentifier: 
   critCost: 4
-  percentage: 0.05
+  percentage: 1

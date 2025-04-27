@@ -13,12 +13,22 @@ public abstract class Ability : ScriptableObject
     public int energyCost;
 
     public CritEffect critEffect;
+    public List<AbilityAction> actions;
 
-    public virtual void Activate(Character user, Character target, bool isCrit)
+    public abstract void AddActions();
+
+    public void Activate(Character user, Character target, bool isCrit)
     {
+        AddActions();
+
         if (isCrit)
         {
-            critEffect.AddEffect(user, target);
+            critEffect.AddEffect(actions, user, target);
+        }
+
+        foreach (AbilityAction act in actions)
+        {
+            act.Execute(user, target);
         }
     }
 
@@ -32,12 +42,27 @@ public abstract class Ability : ScriptableObject
         return FormatDescription(user) + "\n<color=#66AADD>" + critEffect.AddDescription() + "</color>";
     }
 
-    public virtual void ActionText(Character user, Character target, bool isCrit)
+    public void ActionText(Character user, Character target, bool isCrit)
     {
+        AddActions();
+
         if (isCrit)
         {
-            critEffect.ActionText(user, target);
+            critEffect.AddEffect(actions, user, target);
         }
+
+        string actText = "";
+        for (int i = 0; i < actions.Count; i++)
+        {
+            AbilityAction act = actions[i];
+            actText += act.GetActionText(user, target);
+            if(i < actions.Count - 1)
+            {
+                actText += "\n";
+            }
+        }
+
+        target.DisplayActionPerm(actText);
     }
 
     public bool Equals(Ability other)

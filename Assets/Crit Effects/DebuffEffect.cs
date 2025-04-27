@@ -6,11 +6,23 @@ public class DebuffEffect : CritEffect
 {
     public List<StatModifier> debuffs;
 
-    public override void AddEffect(Character user, Character target)
+    public override void AddEffect(List<AbilityAction> actions, Character user, Character target)
     {
-        foreach (StatModifier statMod in debuffs)
+        for (int i = 0; i < actions.Count; i++)
         {
-            target.AddStatus(statMod.DeepCopy());
+            AbilityAction act = actions[i];
+            if (act is DamageAction dmg)
+            {
+                if (dmg.props.DoesHit(user, target))
+                {
+                    actions.Add(new DebuffAction(debuffs, target.currDodge + 100));
+                }
+                break;
+            }
+            if (act is DebuffAction db)
+            {
+                db.statMods.AddRange(debuffs);
+            }
         }
     }
 
@@ -31,16 +43,5 @@ public class DebuffEffect : CritEffect
             }
         }
         return base.AddDescription() + "\nApply " + listDebuffs;
-    }
-
-    public override void ActionText(Character user, Character target)
-    {
-        string action = "";
-        foreach (StatModifier statMod in debuffs)
-        {
-            action += $"<color=#990000>-{statMod.type}</color>";
-            action += "\n";
-        }
-        target.ActionAdd(action);
     }
 }

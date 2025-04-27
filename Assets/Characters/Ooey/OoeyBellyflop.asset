@@ -18,5 +18,5 @@ MonoBehaviour:
   targetType: 2
   energyCost: 2
   critEffect: {fileID: 11400000, guid: 4943db21471e54d40bb46fa36004e8b6, type: 2}
-  attackRatio: 0.7
-  accuracy: 12
+  attackRatio: 1
+  accuracy: 100

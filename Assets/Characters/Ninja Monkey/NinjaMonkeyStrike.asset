@@ -17,6 +17,6 @@ MonoBehaviour:
   abilityDescription: Deals <color=red>{0}%</color> ATK to a single enemy
   targetType: 0
   energyCost: 1
-  critEffect: {fileID: 11400000, guid: 23dab0c07b6894247b31257932966afe, type: 2}
+  critEffect: {fileID: 11400000, guid: 0fa17b46aa58a4b488383ea7174cadc1, type: 2}
   attackRatio: 1
-  accuracy: 15
+  accuracy: 120

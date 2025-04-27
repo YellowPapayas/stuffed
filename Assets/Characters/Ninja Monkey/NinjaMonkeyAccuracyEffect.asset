@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59347f459772a5147b7c2e13290b1620, type: 3}
-  m_Name: NinjaMonkeyDamageEffect
+  m_Script: {fileID: 11500000, guid: e062995d5e4a8344eb08fdeb4e711051, type: 3}
+  m_Name: NinjaMonkeyAccuracyEffect
   m_EditorClassIdentifier: 
-  critCost: 3
-  attackRatio: 0.4
+  critCost: 2
+  accMod: 8

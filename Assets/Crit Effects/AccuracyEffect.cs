@@ -1,10 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-[CreateAssetMenu(fileName = "NewDamageEffect", menuName = "CritEffects/Damage")]
-public class DamageEffect : CritEffect
+[CreateAssetMenu(fileName = "NewAccuracyEffect", menuName = "CritEffects/Accuracy")]
+public class AccuracyEffect : CritEffect
 {
-    public float attackRatio;
+    public int accMod;
 
     public override void AddEffect(List<AbilityAction> actions, Character user, Character target)
     {
@@ -13,13 +13,17 @@ public class DamageEffect : CritEffect
             AbilityAction act = actions[i];
             if (act is DamageAction dmg)
             {
-                dmg.attackRatio += attackRatio;
+                dmg.props.accuracy += accMod;
+            }
+            if (act is DebuffAction db)
+            {
+                db.accProps.accuracy += accMod;
             }
         }
     }
 
     public override string AddDescription()
     {
-        return base.AddDescription() + $"\nDeal an additional {Mathf.FloorToInt(100 * attackRatio)}% ATK to the enemy/enemies";
+        return base.AddDescription() + $"\nAdds {accMod} ACC to the ability";
     }
 }

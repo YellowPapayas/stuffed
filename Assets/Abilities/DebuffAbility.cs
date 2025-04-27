@@ -7,13 +7,10 @@ public class DebuffAbility : Ability
     public List<StatModifier> debuffs;
     public int accuracy;
 
-    public override void Activate(Character user, Character target, bool isCrit)
+    public override void AddActions()
     {
-        bool didHit = target.OnDebuffsHit(debuffs, accuracy + user.GetStat(StatType.Accuracy));
-        if (didHit)
-        {
-            base.Activate(user, target, isCrit);
-        }
+        actions = new List<AbilityAction>();
+        actions.Add(new DebuffAction(debuffs, accuracy));
     }
 
     public override string FormatDescription(Character user)
@@ -33,30 +30,5 @@ public class DebuffAbility : Ability
             }
         }
         return base.FormatDescription(user) + $"\nACC: {accuracy}{user.GetStatString(StatType.Accuracy)}\n" + string.Format(abilityDescription, listDebuffs);
-    }
-
-    public override void ActionText(Character user, Character target, bool isCrit)
-    {
-        bool willHit;
-        string output = "";
-        if (accuracy + user.GetStat(StatType.Accuracy) > target.currDodge)
-        {
-            foreach (StatModifier statMod in debuffs)
-            {
-                output += $"<color=#990000>-{statMod.type}</color>";
-                output += "\n";
-            }
-            willHit = true;
-        }
-        else
-        {
-            output = $"<color=green>DODGED</color>";
-            willHit = false;
-        }
-        target.DisplayActionPerm(output);
-        if (willHit)
-        {
-            base.ActionText(user, target, isCrit);
-        }
     }
 }
