@@ -9,15 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74d9b5b82b87bf343ba158f6c1cd37ee, type: 3}
-  m_Name: Ooey
+  m_Script: {fileID: 11500000, guid: 49d9fbcda93254b4a872f5aa6c7b6fdf, type: 3}
+  m_Name: Remove Crit
   m_EditorClassIdentifier: 
-  characterName: Ooey
-  maxHealth: 100
-  attack: 8
-  initiative: 2
-  maxEnergy: 3
-  crit: 1
-  armor: 10
-  dodge: 5
-  accuracy: 0
+  critCost: 2
+  valueMods:
+  - value: 2
+    amount: 1

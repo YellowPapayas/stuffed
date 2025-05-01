@@ -9,17 +9,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef7103591ef94cb408f0711e654afae0, type: 3}
-  m_Name: NinjaMonkeySmokeBomb
+  m_Script: {fileID: 11500000, guid: 4e8273c1cb8a53245b59a7a8cd0904ad, type: 3}
+  m_Name: Weakpoint
   m_EditorClassIdentifier: 
-  abilityName: Smoke Bomb
+  abilityName: Expose Weakpoint
   abilityImage: {fileID: 0}
-  abilityDescription: Applies {0} to a line of enemies
-  targetType: 2
-  energyCost: 3
-  critEffect: {fileID: 11400000, guid: d459f7cf97c7369489a6f7dfe9aebce2, type: 2}
+  targetType: 0
+  energyCost: 1
+  critEffect: {fileID: 11400000, guid: 4ff59f62896c71d489d237c621dc6c50, type: 2}
+  attackRatio: 0.5
   debuffs:
-  - type: 4
+  - type: 2
     amount: -10
     rounds: 2
   accuracy: 90

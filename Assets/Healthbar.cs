@@ -69,6 +69,12 @@ public class Healthbar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         }
 
         backbar.fillAmount = targetFill;
+
+        if (character.health <= 0)
+        {
+            yield return new WaitForSeconds(0.5f);
+            character.OnDeath();
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)

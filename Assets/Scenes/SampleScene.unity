@@ -381,12 +381,16 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: d616f514934e7f24399d2c01e501514e, type: 2}
     - target: {fileID: 498034907552884064, guid: 0b04ca7f677d75e4ca32ea7a712b7cd3, type: 3}
       propertyPath: abilities.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 498034907552884064, guid: 0b04ca7f677d75e4ca32ea7a712b7cd3, type: 3}
       propertyPath: 'abilities.Array.data[0]'
       value: 
-      objectReference: {fileID: 11400000, guid: 63fe4490c2462954ab91d2cf21a31b55, type: 2}
+      objectReference: {fileID: 11400000, guid: bbea965ae91f7e144b2b271c5d1854c4, type: 2}
+    - target: {fileID: 498034907552884064, guid: 0b04ca7f677d75e4ca32ea7a712b7cd3, type: 3}
+      propertyPath: 'abilities.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: b874b9d69d8b09940909a7c173ba231a, type: 2}
     - target: {fileID: 1275330925001218041, guid: 0b04ca7f677d75e4ca32ea7a712b7cd3, type: 3}
       propertyPath: m_Camera
       value: 
@@ -2975,6 +2979,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pendingAbility: {fileID: 0}
+  pendingCrit: 0
   lastClickedAbility: {fileID: 0}
 --- !u!4 &1336056486
 Transform:
@@ -3452,12 +3457,16 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: d616f514934e7f24399d2c01e501514e, type: 2}
     - target: {fileID: 498034907552884064, guid: 0b04ca7f677d75e4ca32ea7a712b7cd3, type: 3}
       propertyPath: abilities.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 498034907552884064, guid: 0b04ca7f677d75e4ca32ea7a712b7cd3, type: 3}
       propertyPath: 'abilities.Array.data[0]'
       value: 
-      objectReference: {fileID: 11400000, guid: 63fe4490c2462954ab91d2cf21a31b55, type: 2}
+      objectReference: {fileID: 11400000, guid: bbea965ae91f7e144b2b271c5d1854c4, type: 2}
+    - target: {fileID: 498034907552884064, guid: 0b04ca7f677d75e4ca32ea7a712b7cd3, type: 3}
+      propertyPath: 'abilities.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: b874b9d69d8b09940909a7c173ba231a, type: 2}
     - target: {fileID: 1275330925001218041, guid: 0b04ca7f677d75e4ca32ea7a712b7cd3, type: 3}
       propertyPath: m_Camera
       value: 
@@ -3839,8 +3848,12 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 498034907552884064, guid: 0b04ca7f677d75e4ca32ea7a712b7cd3, type: 3}
+      propertyPath: playerControlled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 498034907552884064, guid: 0b04ca7f677d75e4ca32ea7a712b7cd3, type: 3}
       propertyPath: abilities.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 498034907552884064, guid: 0b04ca7f677d75e4ca32ea7a712b7cd3, type: 3}
       propertyPath: 'abilities.Array.data[0]'
@@ -3848,6 +3861,10 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 3bc8695e6586911478d552df6af64edf, type: 2}
     - target: {fileID: 498034907552884064, guid: 0b04ca7f677d75e4ca32ea7a712b7cd3, type: 3}
       propertyPath: 'abilities.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: e0c7d8ac8e3807d43bf44e0a62d45cff, type: 2}
+    - target: {fileID: 498034907552884064, guid: 0b04ca7f677d75e4ca32ea7a712b7cd3, type: 3}
+      propertyPath: 'abilities.Array.data[2]'
       value: 
       objectReference: {fileID: 11400000, guid: 107b9ab0adc60a643af45ec2c7897e13, type: 2}
     - target: {fileID: 1275330925001218041, guid: 0b04ca7f677d75e4ca32ea7a712b7cd3, type: 3}
@@ -4784,6 +4801,10 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 42593018a825ba043809ed9c44ba609a, type: 2}
     - target: {fileID: 498034907552884064, guid: 0b04ca7f677d75e4ca32ea7a712b7cd3, type: 3}
       propertyPath: teamSide
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 498034907552884064, guid: 0b04ca7f677d75e4ca32ea7a712b7cd3, type: 3}
+      propertyPath: playerControlled
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 498034907552884064, guid: 0b04ca7f677d75e4ca32ea7a712b7cd3, type: 3}

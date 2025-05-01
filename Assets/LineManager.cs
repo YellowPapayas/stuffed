@@ -10,6 +10,15 @@ public class LineManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        if (leftFront == null)
+        {
+            Setup();
+        }
+        UpdateLines();
+    }
+
+    void Setup()
+    {
         leftFront = GameObject.Find("Left Front Line");
         leftMid = GameObject.Find("Left Mid Line");
         leftBack = GameObject.Find("Left Back Line");
@@ -24,8 +33,6 @@ public class LineManager : MonoBehaviour
         lines.Add(rightFront);
         lines.Add(rightMid);
         lines.Add(rightBack);
-
-        UpdateLines();
     }
 
     public void UpdateLines()
@@ -55,9 +62,42 @@ public class LineManager : MonoBehaviour
         return output;
     }
 
-    // Update is called once per frame
-    void Update()
+    public List<Character> OneFromEach(bool teamSide)
     {
-        
+        if(leftFront == null)
+        {
+            Setup();
+        }
+        List<Character> output = new List<Character>(3);
+        if(teamSide)
+        {
+            if(leftFront.transform.childCount > 0)
+            {
+                output.Add(leftFront.transform.GetChild(0).gameObject.GetComponent<Character>());
+            }
+            if (leftMid.transform.childCount > 0)
+            {
+                output.Add(leftMid.transform.GetChild(0).gameObject.GetComponent<Character>());
+            }
+            if (leftBack.transform.childCount > 0)
+            {
+                output.Add(leftBack.transform.GetChild(0).gameObject.GetComponent<Character>());
+            }
+        } else
+        {
+            if (rightFront.transform.childCount > 0)
+            {
+                output.Add(rightFront.transform.GetChild(0).gameObject.GetComponent<Character>());
+            }
+            if (rightMid.transform.childCount > 0)
+            {
+                output.Add(rightMid.transform.GetChild(0).gameObject.GetComponent<Character>());
+            }
+            if (rightBack.transform.childCount > 0)
+            {
+                output.Add(rightBack.transform.GetChild(0).gameObject.GetComponent<Character>());
+            }
+        }
+        return output;
     }
 }

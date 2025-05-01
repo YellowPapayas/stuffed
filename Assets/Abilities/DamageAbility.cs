@@ -15,6 +15,7 @@ public class DamageAbility : Ability
 
     public override string FormatDescription(Character user)
     {
+        abilityDescription = "Deal <color=red>{0}%</color> ATK to " + StringTargetType();
         return base.FormatDescription(user) + $"\nACC: {accuracy}{user.GetStatString(StatType.Accuracy)}\n" + string.Format(abilityDescription, Mathf.FloorToInt(attackRatio*100));
     }
 }

@@ -19,8 +19,10 @@ public class Character : MonoBehaviour, IClickable
     public CharacterStats stats;
     public List<Ability> abilities;
     public bool teamSide;
+    public bool playerControlled;
     bool justDodged = false;
     bool isTurn = false;
+    TurnTaker tt;
 
     public int health;
     public int energy;
@@ -47,13 +49,15 @@ public class Character : MonoBehaviour, IClickable
 
         bm = GameObject.Find("BattleManager").GetComponent<BattleManager>();
 
+        if (playerControlled)
+        {
+            tt = new PlayerTurn();
+        } else
+        {
+            tt = new EnemyTurn();
+        }
+
         statMods = new List<StatModifier>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     public void SetHighlight(bool show)
@@ -176,6 +180,9 @@ public class Character : MonoBehaviour, IClickable
         if (energy > stats.maxEnergy)
         {
             energy = stats.maxEnergy;
+        } else if (energy < 0)
+        {
+            energy = 0;
         }
 
         currCrit += stats.crit;
@@ -183,6 +190,8 @@ public class Character : MonoBehaviour, IClickable
         {
             currCrit = stats.crit * 10;
         }
+
+        tt.TakeTurn(this);
     }
 
     public void OnTurnEnd()
@@ -235,6 +244,57 @@ public class Character : MonoBehaviour, IClickable
         }
     }
 
+    public int GetCurrentValue(CurrentValue cv)
+    {
+        switch (cv)
+        {
+            case CurrentValue.Dodge:
+                return currDodge;
+            case CurrentValue.Energy:
+                return stats.maxEnergy + energy;
+            case CurrentValue.Crit:
+                return stats.crit + currCrit;
+            default:
+                return 0;
+        }
+    }
+
+    public bool OnRemoveValue(List<ValueModifier> valMods, int acc)
+    {
+        if (acc > currDodge)
+        {
+            foreach (ValueModifier valMod in valMods)
+            {
+                switch (valMod.value)
+                {
+                    case CurrentValue.Dodge:
+                        currDodge -= valMod.amount;
+                        if (currDodge < 0)
+                        {
+                            currDodge = 0;
+                        }
+                        break;
+                    case CurrentValue.Energy:
+                        energy -= valMod.amount;
+                        break;
+                    case CurrentValue.Crit:
+                        currCrit -= valMod.amount;
+                        if (currCrit < 0)
+                        {
+                            currCrit = 0;
+                        }
+                        break;
+                }
+            }
+            return true;
+        } else
+        {
+            justDodged = true;
+            currDodge -= acc;
+            return false;
+        }
+    }
+
     public void OnHeal(int amount)
     {
         Heal(amount);
@@ -248,6 +308,13 @@ public class Character : MonoBehaviour, IClickable
     public int calcArmorDamage(int damage)
     {
         return Mathf.FloorToInt(damage * ArmorReduction());
+    }
+
+    public void OnDeath()
+    {
+        bm.OnCharacterDeath(this);
+
+        Destroy(this.gameObject);
     }
 
     void Damage(int damage)
@@ -272,6 +339,20 @@ public class Character : MonoBehaviour, IClickable
             health += amount;
         }
         bar.UpdateView();
+    }
+
+    public int HighestCritCost()
+    {
+        int max = 0;
+        foreach(Ability ab in abilities)
+        {
+            int cost = ab.critEffect.critCost;
+            if(cost > max)
+            {
+                max = cost;
+            }
+        }
+        return max;
     }
 
     public void DisplayAbilityAction(string action)
@@ -328,4 +409,28 @@ public class Character : MonoBehaviour, IClickable
             }
         }
     }
+}
+
+[System.Serializable]
+public class ValueModifier
+{
+    public CurrentValue value;
+    public int amount;
+
+    public ValueModifier(CurrentValue cv, int am)
+    {
+        value = cv; amount = am;
+    }
+
+    public ValueModifier DeepCopy()
+    {
+        return new ValueModifier(value, amount);
+    }
+}
+
+public enum CurrentValue
+{
+    Dodge,
+    Energy,
+    Crit
 }

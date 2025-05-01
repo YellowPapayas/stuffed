@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d4dbea9a24ebc2644b24310d57be76e5, type: 3}
-  m_Name: NinjaMonkeyStrike
+  m_Name: Bellyflop
   m_EditorClassIdentifier: 
-  abilityName: Precise Strike
+  abilityName: Bellyflop
   abilityImage: {fileID: 0}
-  abilityDescription: Deals <color=red>{0}%</color> ATK to a single enemy
-  targetType: 0
-  energyCost: 1
-  critEffect: {fileID: 11400000, guid: 0fa17b46aa58a4b488383ea7174cadc1, type: 2}
+  abilityDescription: Deals <color=red>{0}%</color> ATK to an enemy line
+  targetType: 2
+  energyCost: 2
+  critEffect: {fileID: 11400000, guid: 4943db21471e54d40bb46fa36004e8b6, type: 2}
   attackRatio: 1
-  accuracy: 120
+  accuracy: 100

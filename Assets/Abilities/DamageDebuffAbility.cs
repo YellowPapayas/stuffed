@@ -1,15 +1,17 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-[CreateAssetMenu(fileName = "NewDebuffAbility", menuName = "Abilities/Debuff")]
-public class DebuffAbility : Ability
+[CreateAssetMenu(fileName = "NewDamageDebuffAbility", menuName = "Abilities/DamageDebuff")]
+public class DamageDebuffAbility : Ability
 {
+    public float attackRatio;
     public List<StatModifier> debuffs;
     public int accuracy;
 
     public override void AddActions()
     {
         actions = new List<AbilityAction>();
+        actions.Add(new DamageAction(attackRatio, accuracy));
         actions.Add(new DebuffAction(debuffs, accuracy));
     }
 
@@ -29,7 +31,7 @@ public class DebuffAbility : Ability
                 listDebuffs += ", ";
             }
         }
-        abilityDescription = "Apply {0} to " + StringTargetType();
-        return base.FormatDescription(user) + $"\nACC: {accuracy}{user.GetStatString(StatType.Accuracy)}\n" + string.Format(abilityDescription, listDebuffs);
+        abilityDescription = "Deal <color=red>{0}%</color> ATK and apply {1} to " + StringTargetType();
+        return base.FormatDescription(user) + $"\nACC: {accuracy}{user.GetStatString(StatType.Accuracy)}\n" + string.Format(abilityDescription, Mathf.FloorToInt(attackRatio * 100), listDebuffs);
     }
 }

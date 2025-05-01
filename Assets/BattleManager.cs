@@ -21,7 +21,7 @@ public class BattleManager : MonoBehaviour
     List<Character> rightSide;
     Queue<Character> turnQueue;
 
-    bool pendingCrit = false;
+    public bool pendingCrit = false;
     public Ability lastClickedAbility = null;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -66,7 +66,13 @@ public class BattleManager : MonoBehaviour
         turnOrderDisplay.Setup(characters);
     }
 
-    List<Character> GetTeam(bool teamSide)
+    public void OnCharacterDeath(Character ch)
+    {
+        GetTeam(ch.teamSide).Remove(ch);
+        characters.Remove(ch);
+    }
+
+    public List<Character> GetTeam(bool teamSide)
     {
         if (teamSide)
         {
@@ -136,10 +142,12 @@ public class BattleManager : MonoBehaviour
         if (turnQueue.Count > 0)
         {
             pendingChar = turnQueue.Dequeue();
+            if (pendingChar == null)
+            {
+                turnOrderDisplay.RemoveTopTurn();
+                NextTurn();
+            }
             pendingChar.OnTurnStart();
-            GameObject.Find("AbilityBar").GetComponent<AbilityBar>().DisplayAbilities(pendingChar);
-            energyDisplay.SetDescription(pendingChar.energy + " / " + pendingChar.stats.maxEnergy);
-            critDisplay.SetDescription(pendingChar.currCrit + "");
         }
         else
         {

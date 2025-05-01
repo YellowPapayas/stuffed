@@ -28,6 +28,7 @@ public class BuffAbility : Ability
                 listBuffs += ", ";
             }
         }
+        abilityDescription = "Apply {0} to " + StringTargetType();
         return base.FormatDescription(user) + "\n" + string.Format(abilityDescription, listBuffs);
     }
 }

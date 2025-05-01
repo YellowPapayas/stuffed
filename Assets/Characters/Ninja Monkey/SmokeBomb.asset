@@ -9,11 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6925a776828e7374e9ef5c65dc1ac0b6, type: 3}
-  m_Name: NinjaMonkeyAttackDebuffEffect
+  m_Script: {fileID: 11500000, guid: ef7103591ef94cb408f0711e654afae0, type: 3}
+  m_Name: SmokeBomb
   m_EditorClassIdentifier: 
-  critCost: 3
+  abilityName: Smoke Bomb
+  abilityImage: {fileID: 0}
+  targetType: 2
+  energyCost: 3
+  critEffect: {fileID: 11400000, guid: d459f7cf97c7369489a6f7dfe9aebce2, type: 2}
   debuffs:
-  - type: 0
-    amount: -2
+  - type: 4
+    amount: -15
     rounds: 2
+  accuracy: 90

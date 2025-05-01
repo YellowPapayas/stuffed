@@ -10,13 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d4dbea9a24ebc2644b24310d57be76e5, type: 3}
-  m_Name: OoeyBellyflop
+  m_Name: Spooky Noise
   m_EditorClassIdentifier: 
-  abilityName: Bellyflop
+  abilityName: Spooky Noise
   abilityImage: {fileID: 0}
-  abilityDescription: Deals <color=red>{0}%</color> ATK to an enemy line
-  targetType: 2
-  energyCost: 2
-  critEffect: {fileID: 11400000, guid: 4943db21471e54d40bb46fa36004e8b6, type: 2}
+  targetType: 0
+  energyCost: 1
+  critEffect: {fileID: 11400000, guid: de60fbda198de3748b53a7278bd13ded, type: 2}
   attackRatio: 1
-  accuracy: 100
+  accuracy: 85
