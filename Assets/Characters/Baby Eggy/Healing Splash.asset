@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdbbf58ab5c5fe943a7fcbfe79c1d90f, type: 3}
+  m_Name: Healing Splash
+  m_EditorClassIdentifier: 
+  abilityName: Healing Splash
+  abilityImage: {fileID: 0}
+  targetType: 1
+  energyCost: 2
+  critCost: 3
+  critEffect: {fileID: 11400000, guid: d9fef14c247479b4389f7d4f9cfd615e, type: 2}
+  conditions:
+  - cond: {fileID: 11400000, guid: 0fd61bb2601b463468da7d5d1e076856, type: 2}
+    effect: {fileID: 11400000, guid: 0db2e89cde911bd49b3f91e1a0b8667e, type: 2}
+  healRatio: 1.5

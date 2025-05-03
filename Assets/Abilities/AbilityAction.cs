@@ -118,8 +118,12 @@ public class DebuffAction : AbilityAction
             float output = 0f;
             foreach (StatModifier sm in statMods)
             {
-                int diff = target.GetStat(sm.type) + sm.amount;
-                float percentDebuff = sm.rounds * ((float)sm.amount) / diff;
+                int stat = target.GetStat(sm.type);
+                if(stat == 0)
+                {
+                    stat = 1;
+                }
+                float percentDebuff = sm.rounds * ((float)sm.amount) / stat;
                 if(percentDebuff < 0)
                 {
                     percentDebuff *= -1;
@@ -152,6 +156,10 @@ public class BuffAction : AbilityAction
     {
         foreach (StatModifier statMod in statMods)
         {
+            if(user.Equals(target))
+            {
+                statMod.removeThisRound = false;
+            }
             target.AddStatus(statMod.DeepCopy());
         }
         return true;
@@ -177,8 +185,12 @@ public class BuffAction : AbilityAction
         float output = 0f;
         foreach (StatModifier sm in statMods)
         {
-            int diff = target.GetStat(sm.type) + sm.amount;
-            float percentBuff = sm.rounds * ((float)sm.amount) / diff;
+            int stat = target.GetStat(sm.type);
+            if (stat == 0)
+            {
+                stat = 1;
+            }
+            float percentBuff = sm.rounds * ((float)sm.amount) / stat;
             if(percentBuff < 0)
             {
                 percentBuff *= -1;
@@ -278,5 +290,95 @@ public class RemoveValueAction : AbilityAction
             float percentDodge = 10 * ((float)props.accuracy) / target.currDodge;
             return percentDodge * mults.removeValue;
         }
+    }
+}
+
+public class AddValueAction : AbilityAction
+{
+    public List<ValueModifier> valueMods = new List<ValueModifier>();
+
+    public AddValueAction(List<ValueModifier> mods)
+    {
+        valueMods = mods;
+    }
+
+    public override bool Execute(Character user, Character target)
+    {
+        target.OnAddValue(valueMods);
+        return true;
+    }
+
+    public override string GetActionText(Character user, Character target)
+    {
+        string output = "";
+        for (int i = 0; i < valueMods.Count; i++)
+        {
+            ValueModifier valMod = valueMods[i];
+            output += $"<color=#00BB55>+CURRENT {valMod.value}</color>";
+            if (i < valueMods.Count - 1)
+            {
+                output += "\n";
+            }
+        }
+        return output;
+    }
+
+    public override float GetActionValue(Character user, Character target, ActionValues mults)
+    {
+        float output = 0f;
+        foreach (ValueModifier vm in valueMods)
+        {
+            int diff = target.GetCurrentValue(vm.value) + vm.amount;
+            float percentRemove = (((float)vm.amount) / diff);
+            if (percentRemove < 0)
+            {
+                percentRemove *= -1f;
+            }
+            output += percentRemove * mults.removeValue;
+        }
+        return output;
+    }
+}
+
+public class RemoveDebuffAction : AbilityAction
+{
+    public override bool Execute(Character user, Character target)
+    {
+        for (int i = target.statMods.Count - 1; i >= 0; i--)
+        {
+            if (target.statMods[i].amount < 0)
+            {
+                target.RemoveStatusIndex(i);
+            }
+        }
+        return true;
+    }
+
+    public override string GetActionText(Character user, Character target)
+    {
+        return $"<color=green>-DEBUFFS</color>";
+    }
+
+    public override float GetActionValue(Character user, Character target, ActionValues mults)
+    {
+        float output = 0f;
+        foreach (StatModifier sm in target.statMods)
+        {
+            if(sm.amount < 0)
+            {
+                int stat = target.stats.GetStat(sm.type);
+                if(stat == 0)
+                {
+                    stat = 1;
+                }
+                float percent = sm.rounds * ((float) sm.amount / stat);
+                if(percent < 0)
+                {
+                    percent *= -1;
+                }
+                output += percent * mults.debuffValue;
+            }
+        }
+        return output;
     }
 }

@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "NewDebuffEffect", menuName = "CritEffects/Debuff")]
-public class DebuffEffect : CritEffect
+public class DebuffEffect : AbilityEffect
 {
     public List<StatModifier> debuffs;
 
@@ -42,6 +42,6 @@ public class DebuffEffect : CritEffect
                 listDebuffs += ", ";
             }
         }
-        return base.AddDescription() + "\nApply " + listDebuffs;
+        return "Apply " + listDebuffs;
     }
 }

@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   critCost: 2
   debuffs:
-  - type: 2
+  - type: 1
     amount: -5
     rounds: 2

@@ -16,6 +16,8 @@ MonoBehaviour:
   abilityImage: {fileID: 0}
   targetType: 0
   energyCost: 1
+  critCost: 2
   critEffect: {fileID: 11400000, guid: de60fbda198de3748b53a7278bd13ded, type: 2}
+  conditions: []
   attackRatio: 1
   accuracy: 85

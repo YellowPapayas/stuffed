@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: HealEffect
   m_EditorClassIdentifier: 
   critCost: 2
-  percentage: 1.2
+  percentage: 2

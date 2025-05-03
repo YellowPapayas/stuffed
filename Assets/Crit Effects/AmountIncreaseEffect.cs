@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "NewAmountIncreaseEffect", menuName = "CritEffects/AmountIncrease")]
-public class AmountIncreaseEffect : CritEffect
+public class AmountIncreaseEffect : AbilityEffect
 {
     public int amount;
 
@@ -23,6 +23,6 @@ public class AmountIncreaseEffect : CritEffect
 
     public override string AddDescription()
     {
-        return base.AddDescription() + $"\nIncrease stat modifier amount(s) by {amount}";
+        return $"Increase stat modifier amount(s) by {amount}";
     }
 }

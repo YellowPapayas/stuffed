@@ -20,7 +20,6 @@ public class CharacterStats : ScriptableObject
         {
             case StatType.Attack: return attack;
             case StatType.Armor: return armor;
-            case StatType.Initiative: return initiative;
             case StatType.Dodge: return dodge;
             case StatType.Accuracy: return accuracy;
             default: return 0;
@@ -31,7 +30,6 @@ public class CharacterStats : ScriptableObject
 public enum StatType
 {
     Attack,
-    Initiative,
     Armor,
     Dodge,
     Accuracy
@@ -43,6 +41,7 @@ public class StatModifier
     public StatType type;
     public int amount;
     public int rounds;
+    public bool removeThisRound = false;
 
     public StatModifier(StatType st, int am, int ro)
     {
@@ -51,6 +50,8 @@ public class StatModifier
 
     public StatModifier DeepCopy()
     {
-        return new StatModifier(type, amount, rounds);
+        StatModifier output = new StatModifier(type, amount, rounds);
+        output.removeThisRound = removeThisRound;
+        return output;
     }
 }

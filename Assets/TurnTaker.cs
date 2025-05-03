@@ -81,7 +81,7 @@ public class EnemyTurn : TurnTaker
                     energyAmount -= abop.ability.energyCost;
                     if (abop.isCrit)
                     {
-                        critAmount -= abop.ability.critEffect.critCost;
+                        critAmount -= abop.ability.critCost;
                     }
                     break;
                 } else
@@ -131,7 +131,7 @@ public class EnemyTurn : TurnTaker
             maxValue += reg;
 
             crit *= ((float) user.currCrit) / user.HighestCritCost();
-            if (ab.critEffect.critCost <= critAmount && crit != reg)
+            if (ab.critCost <= critAmount && crit != reg)
             {
                 output.Add(new AbilityOption(ab, ch, crit, true));
                 maxValue += crit;

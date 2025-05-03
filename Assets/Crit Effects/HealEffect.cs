@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "NewHealEffect", menuName = "CritEffects/Heal")]
-public class HealEffect : CritEffect
+public class HealEffect : AbilityEffect
 {
     public float percentage;
 
@@ -22,6 +22,6 @@ public class HealEffect : CritEffect
 
     public override string AddDescription()
     {
-        return base.AddDescription() + $"\nHeal the user for {(int) (percentage*100)}% ATK";
+        return $"Heal the target for {(int) (percentage*100)}% ATK";
     }
 }

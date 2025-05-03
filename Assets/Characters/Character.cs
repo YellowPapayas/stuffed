@@ -164,18 +164,6 @@ public class Character : MonoBehaviour, IClickable
         isTurn = true;
         SetHighlight(false);
 
-        for (int i = statMods.Count - 1; i >= 0; i--)
-        {
-            if (statMods[i].amount >= 0)
-            {
-                statMods[i].rounds--;
-                if (statMods[i].rounds <= 0)
-                {
-                    RemoveStatusIndex(i);
-                }
-            }
-        }
-
         energy += stats.maxEnergy;
         if (energy > stats.maxEnergy)
         {
@@ -201,7 +189,7 @@ public class Character : MonoBehaviour, IClickable
 
         for (int i = statMods.Count - 1; i >= 0; i--)
         {
-            if (statMods[i].amount < 0)
+            if (statMods[i].removeThisRound)
             {
                 statMods[i].rounds--;
                 if (statMods[i].rounds <= 0)
@@ -223,6 +211,14 @@ public class Character : MonoBehaviour, IClickable
             else
             {
                 currDodge = stats.dodge * 10;
+            }
+        }
+
+        for (int i = statMods.Count - 1; i >= 0; i--)
+        {
+            if (!statMods[i].removeThisRound)
+            {
+                statMods[i].removeThisRound = true;
             }
         }
 
@@ -295,6 +291,29 @@ public class Character : MonoBehaviour, IClickable
         }
     }
 
+    public void OnAddValue(List<ValueModifier> valMods)
+    {
+        foreach (ValueModifier valMod in valMods)
+        {
+            switch (valMod.value)
+            {
+                case CurrentValue.Dodge:
+                    currDodge += valMod.amount;
+                    if (currDodge > stats.dodge * 10)
+                    {
+                        currDodge = stats.dodge * 10;
+                    }
+                    break;
+                case CurrentValue.Energy:
+                    energy += valMod.amount;
+                    break;
+                case CurrentValue.Crit:
+                    currCrit += valMod.amount;
+                    break;
+            }
+        }
+    }
+
     public void OnHeal(int amount)
     {
         Heal(amount);
@@ -346,7 +365,7 @@ public class Character : MonoBehaviour, IClickable
         int max = 0;
         foreach(Ability ab in abilities)
         {
-            int cost = ab.critEffect.critCost;
+            int cost = ab.critCost;
             if(cost > max)
             {
                 max = cost;

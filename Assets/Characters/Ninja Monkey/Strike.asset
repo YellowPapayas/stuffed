@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityName: Precise Strike
   abilityImage: {fileID: 0}
-  abilityDescription: Deals <color=red>{0}%</color> ATK to a single enemy
   targetType: 0
   energyCost: 1
+  critCost: 2
   critEffect: {fileID: 11400000, guid: 0fa17b46aa58a4b488383ea7174cadc1, type: 2}
+  conditions: []
   attackRatio: 1
   accuracy: 120

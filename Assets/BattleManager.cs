@@ -174,7 +174,7 @@ public class BattleManager : MonoBehaviour
         }
         else
         {
-            abilityDescription.SetDescription(pendingAbility.FormatDescription(pendingChar));
+            abilityDescription.SetDescription(pendingAbility.FullDescription(pendingChar));
         }
 
         click.selected = true;
@@ -186,7 +186,7 @@ public class BattleManager : MonoBehaviour
         {
             if (pendingChar.energy >= pendingAbility.energyCost)
             {
-                if (!pendingCrit || pendingChar.currCrit >= pendingAbility.critEffect.critCost)
+                if (!pendingCrit || pendingChar.currCrit >= pendingAbility.critCost)
                 {
                     ClearActionText(characters);
                     List<Character> targets = GetTargets(target);
@@ -194,13 +194,13 @@ public class BattleManager : MonoBehaviour
                     energyDisplay.SetDescription(pendingChar.energy + " / " + pendingChar.stats.maxEnergy);
                     if (pendingCrit)
                     {
-                        pendingChar.currCrit -= pendingAbility.critEffect.critCost;
+                        pendingChar.currCrit -= pendingAbility.critCost;
                         critDisplay.SetDescription(pendingChar.currCrit + "");
                     }
                     click.paused = true;
                     Ability saveAbility = pendingAbility;
                     StopTargeting();
-                    yield return StartCoroutine(dm.ShowAbilityUse(saveAbility, targets));
+                    yield return StartCoroutine(dm.ShowAbilityUse(pendingChar, saveAbility, targets));
                     yield return new WaitForSeconds(0.1f);
                     dm.SetActionDuration(targets, 400);
                     foreach (Character ch in targets)

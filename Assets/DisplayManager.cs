@@ -8,6 +8,7 @@ public class DisplayManager : MonoBehaviour
 {
     GameObject overlayCanvas;
     TMP_Text abilityText;
+    TMP_Text characterText;
 
     BattleManager bm;
     ClickHandle click;
@@ -19,6 +20,7 @@ public class DisplayManager : MonoBehaviour
     {
         overlayCanvas = GameObject.Find("Main Camera").transform.Find("Overlay").gameObject;
         abilityText = overlayCanvas.transform.Find("Ability Name").gameObject.GetComponent<TMP_Text>();
+        characterText = overlayCanvas.transform.Find("Character Name").gameObject.GetComponent<TMP_Text>();
         overlayCanvas.SetActive(false);
 
         bm = gameObject.GetComponent<BattleManager>();
@@ -31,12 +33,13 @@ public class DisplayManager : MonoBehaviour
         }
     }
 
-    public IEnumerator ShowAbilityUse(Ability pendingAbility, List<Character> targets)
+    public IEnumerator ShowAbilityUse(Character user, Ability pendingAbility, List<Character> targets)
     {
-        abilityText.text = pendingAbility.abilityName;
+        characterText.text = user.stats.characterName + " uses:";
+        abilityText.text = pendingAbility.abilityName + (bm.pendingCrit ? "\n<color=#66CCCC>CRITICAL!</color>" : "");
         overlayCanvas.SetActive(true);
 
-        yield return new WaitForSeconds(1.1f);
+        yield return new WaitForSeconds(1.3f);
 
         overlayCanvas.SetActive(false);
 

@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "NewRemoveValueEffect", menuName = "CritEffects/RemoveValue")]
-public class RemoveValueEffect : CritEffect
+public class RemoveValueEffect : AbilityEffect
 {
     public List<ValueModifier> valueMods;
 
@@ -51,6 +51,6 @@ public class RemoveValueEffect : CritEffect
                 listValueMods += ", ";
             }
         }
-        return base.AddDescription() + "\nRemove " + listValueMods;
+        return "Remove " + listValueMods;
     }
 }

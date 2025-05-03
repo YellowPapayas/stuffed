@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "NewDamageEffect", menuName = "CritEffects/Damage")]
-public class DamageEffect : CritEffect
+public class DamageEffect : AbilityEffect
 {
     public float attackRatio;
 
@@ -20,6 +20,6 @@ public class DamageEffect : CritEffect
 
     public override string AddDescription()
     {
-        return base.AddDescription() + $"\nDeal an additional {Mathf.FloorToInt(100 * attackRatio)}% ATK to the enemy/enemies";
+        return $"Deal an additional {Mathf.FloorToInt(100 * attackRatio)}% ATK to the enemy/enemies";
     }
 }

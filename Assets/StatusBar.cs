@@ -8,6 +8,7 @@ public class StatusBar : MonoBehaviour
     GameObject armorIcon;
     GameObject attackIcon;
     GameObject accuracyIcon;
+    GameObject dodgeIcon;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -17,6 +18,7 @@ public class StatusBar : MonoBehaviour
         attackIcon = transform.Find("Attack Icon").gameObject;
         armorIcon = transform.Find("Armor Icon").gameObject;
         accuracyIcon = transform.Find("Accuracy Icon").gameObject;
+        dodgeIcon = transform.Find("Dodge Icon").gameObject;
 
         ClearView();
     }
@@ -34,11 +36,9 @@ public class StatusBar : MonoBehaviour
             case StatType.Armor:
                 return armorIcon;
             case StatType.Dodge:
-                return null;
+                return dodgeIcon;
             case StatType.Attack:
                 return attackIcon;
-            case StatType.Initiative:
-                return null;
             case StatType.Accuracy:
                 return accuracyIcon;
         }

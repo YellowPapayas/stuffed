@@ -14,11 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityName: Coconut Armor
   abilityImage: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  abilityDescription: Grants an ally {0}
   targetType: 1
   energyCost: 2
+  critCost: 2
   critEffect: {fileID: 11400000, guid: 812a2894bd022a84da02cc1543a6f7e7, type: 2}
+  conditions: []
   buffs:
-  - type: 2
+  - type: 1
     amount: 10
     rounds: 3
+    removeThisRound: 0

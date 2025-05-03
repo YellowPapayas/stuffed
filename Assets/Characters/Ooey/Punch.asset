@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityName: Punch
   abilityImage: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  abilityDescription: Deals <color=red>{0}%</color> ATK to a single enemy
   targetType: 0
   energyCost: 1
+  critCost: 2
   critEffect: {fileID: 11400000, guid: 3e84ea3baa275de4aa0dfd29e019fca9, type: 2}
+  conditions: []
   attackRatio: 1
   accuracy: 80

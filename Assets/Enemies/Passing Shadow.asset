@@ -16,12 +16,16 @@ MonoBehaviour:
   abilityImage: {fileID: 0}
   targetType: 4
   energyCost: 2
+  critCost: 3
   critEffect: {fileID: 11400000, guid: b4e8a58505afad046826ea1e8d2cc5a3, type: 2}
+  conditions: []
   debuffs:
   - type: 0
     amount: -1
     rounds: 2
-  - type: 4
+    removeThisRound: 0
+  - type: 3
     amount: -5
     rounds: 2
+    removeThisRound: 0
   accuracy: 65

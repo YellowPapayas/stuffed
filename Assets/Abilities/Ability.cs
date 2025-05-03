@@ -10,20 +10,17 @@ public abstract class Ability : ScriptableObject
 
     public TargetType targetType;
     public int energyCost;
+    public int critCost;
 
-    public CritEffect critEffect;
+    public AbilityEffect critEffect;
     public List<AbilityAction> actions;
+    public List<ConditionalTuple> conditions;
 
     public abstract void AddActions();
 
     public void Activate(Character user, Character target, bool isCrit)
     {
-        AddActions();
-
-        if (isCrit)
-        {
-            critEffect.AddEffect(actions, user, target);
-        }
+        SetupActions(user, target, isCrit);
 
         foreach (AbilityAction act in actions)
         {
@@ -34,19 +31,56 @@ public abstract class Ability : ScriptableObject
         }
     }
 
+    public void SetupActions(Character user, Character target, bool isCrit)
+    {
+        AddActions();
+
+        foreach(ConditionalTuple ct in conditions) {
+            if(ct.cond.CheckCondition(user, target))
+            {
+                ct.effect.AddEffect(actions, user, target);
+            }
+        }
+
+        if (isCrit)
+        {
+            critEffect.AddEffect(actions, user, target);
+        }
+    }
+
     public virtual string FormatDescription(Character user)
     {
-        return $"<color=#FFBB00>{energyCost} Energy</color>";
+        return "";
+    }
+
+    public string FullDescription(Character user)
+    {
+        string conds = "";
+        for(int i = 0; i < conditions.Count; i++)
+        {
+            ConditionalTuple ct = conditions[i];
+            conds += ct.cond.ConditionString();
+            conds += ct.effect.AddDescription() + (i < conditions.Count-1 ? "\n" : "");
+        }
+        return $"<color=#FFBB00>{energyCost} Energy</color>" + FormatDescription(user) + (conditions.Count > 0 ? "\n" + conds : "");
     }
 
     public string CritDescription(Character user)
     {
-        return FormatDescription(user) + "\n<color=#66AADD>" + critEffect.AddDescription() + "</color>";
+        return FullDescription(user) + $"\n<color=#66CCCC>{critCost} CRIT</color>\n<color=#66AADD>" + critEffect.AddDescription() + "</color>";
     }
 
     public void ActionText(Character user, Character target, bool isCrit)
     {
         AddActions();
+
+        foreach (ConditionalTuple ct in conditions)
+        {
+            if (ct.cond.CheckCondition(user, target))
+            {
+                ct.effect.AddEffect(actions, user, target);
+            }
+        }
 
         if (isCrit)
         {
@@ -74,6 +108,14 @@ public abstract class Ability : ScriptableObject
     public (float, float) CalcActionValue(Character user, Character target, ActionValues mults)
     {
         AddActions();
+
+        foreach (ConditionalTuple ct in conditions)
+        {
+            if (ct.cond.CheckCondition(user, target))
+            {
+                ct.effect.AddEffect(actions, user, target);
+            }
+        }
 
         float total = 0f;
         foreach (AbilityAction act in actions)
@@ -159,6 +201,13 @@ public abstract class Ability : ScriptableObject
                 return "";
         }
     }
+}
+
+[System.Serializable]
+public class ConditionalTuple
+{
+    public Conditional cond;
+    public AbilityEffect effect;
 }
 
 public enum TargetType

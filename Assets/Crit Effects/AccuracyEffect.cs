@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "NewAccuracyEffect", menuName = "CritEffects/Accuracy")]
-public class AccuracyEffect : CritEffect
+public class AccuracyEffect : AbilityEffect
 {
     public int accMod;
 
@@ -24,6 +24,6 @@ public class AccuracyEffect : CritEffect
 
     public override string AddDescription()
     {
-        return base.AddDescription() + $"\nAdds {accMod} ACC to the ability";
+        return $"Adds {accMod} ACC to the ability";
     }
 }
