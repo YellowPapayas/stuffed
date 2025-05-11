@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d78c68cf6b430cb4c847a1ad07b039dd, type: 3}
-  m_Name: AmountIncreaseEffect
+  m_Script: {fileID: 11500000, guid: 59347f459772a5147b7c2e13290b1620, type: 3}
+  m_Name: WeakpointDamage
   m_EditorClassIdentifier: 
-  amount: -10
+  attackRatio: 0.6

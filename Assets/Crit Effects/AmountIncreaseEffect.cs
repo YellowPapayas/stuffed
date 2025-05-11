@@ -6,7 +6,7 @@ public class AmountIncreaseEffect : AbilityEffect
 {
     public int amount;
 
-    public override void AddEffect(List<AbilityAction> actions, Character user, Character target)
+    public override void AddEffect(List<AbilityAction> actions)
     {
         for (int i = 0; i < actions.Count; i++)
         {

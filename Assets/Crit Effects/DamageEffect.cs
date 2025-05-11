@@ -6,7 +6,7 @@ public class DamageEffect : AbilityEffect
 {
     public float attackRatio;
 
-    public override void AddEffect(List<AbilityAction> actions, Character user, Character target)
+    public override void AddEffect(List<AbilityAction> actions)
     {
         for (int i = 0; i < actions.Count; i++)
         {
@@ -14,12 +14,14 @@ public class DamageEffect : AbilityEffect
             if (act is DamageAction dmg)
             {
                 dmg.attackRatio += attackRatio;
+                break;
             }
         }
+        actions.Add(new DamageAction(attackRatio));
     }
 
     public override string AddDescription()
     {
-        return $"Deal an additional {Mathf.FloorToInt(100 * attackRatio)}% ATK to the enemy/enemies";
+        return $"Deal +{Mathf.FloorToInt(100 * attackRatio)}% ATK damage";
     }
 }

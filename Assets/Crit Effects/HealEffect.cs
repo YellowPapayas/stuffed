@@ -6,7 +6,7 @@ public class HealEffect : AbilityEffect
 {
     public float percentage;
 
-    public override void AddEffect(List<AbilityAction> actions, Character user, Character target)
+    public override void AddEffect(List<AbilityAction> actions)
     {
         for (int i = 0; i < actions.Count; i++)
         {
@@ -22,6 +22,6 @@ public class HealEffect : AbilityEffect
 
     public override string AddDescription()
     {
-        return $"Heal the target for {(int) (percentage*100)}% ATK";
+        return $"Heal the target for +{(int) (percentage*100)}% ATK";
     }
 }

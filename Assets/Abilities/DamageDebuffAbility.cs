@@ -11,8 +11,8 @@ public class DamageDebuffAbility : Ability
     public override void AddActions()
     {
         actions = new List<AbilityAction>();
-        actions.Add(new DamageAction(attackRatio, accuracy));
-        actions.Add(new DebuffAction(debuffs, accuracy));
+        actions.Add(new DamageAction(attackRatio));
+        actions.Add(new DebuffAction(debuffs));
     }
 
     public override string FormatDescription(Character user)

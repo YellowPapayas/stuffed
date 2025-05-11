@@ -2,15 +2,14 @@ using UnityEngine;
 using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "NewDebuffAbility", menuName = "Abilities/Debuff")]
-public class DebuffAbility : Ability
+public class DebuffAbility : AccuracyAbility
 {
     public List<StatModifier> debuffs;
-    public int accuracy;
 
     public override void AddActions()
     {
         actions = new List<AbilityAction>();
-        actions.Add(new DebuffAction(debuffs, accuracy));
+        actions.Add(new DebuffAction(debuffs));
     }
 
     public override string FormatDescription(Character user)
@@ -30,6 +29,6 @@ public class DebuffAbility : Ability
             }
         }
         abilityDescription = "Apply {0} to " + StringTargetType();
-        return base.FormatDescription(user) + $"\nACC: {accuracy}{user.GetStatString(StatType.Accuracy)}\n" + string.Format(abilityDescription, listDebuffs);
+        return base.FormatDescription(user) + "\n" + string.Format(abilityDescription, listDebuffs);
     }
 }

@@ -6,33 +6,18 @@ public class RemoveValueEffect : AbilityEffect
 {
     public List<ValueModifier> valueMods;
 
-    public override void AddEffect(List<AbilityAction> actions, Character user, Character target)
+    public override void AddEffect(List<AbilityAction> actions)
     {
         for (int i = 0; i < actions.Count; i++)
         {
             AbilityAction act = actions[i];
-            if (act is DamageAction dmg)
-            {
-                if (dmg.props.DoesHit(user, target))
-                {
-                    actions.Add(new RemoveValueAction(valueMods, target.currDodge + 100));
-                }
-                break;
-            }
-            if (act is DebuffAction db)
-            {
-                if (db.accProps.DoesHit(user, target))
-                {
-                    actions.Add(new RemoveValueAction(valueMods, target.currDodge + 100));
-                }
-                break;
-            }
             if (act is RemoveValueAction rv)
             {
                 rv.valueMods.AddRange(valueMods);
                 break;
             }
         }
+        actions.Add(new RemoveValueAction(valueMods));
     }
 
     public override string AddDescription()

@@ -24,12 +24,12 @@ public class StatsDisplay : MonoBehaviour
         attack.text = "Attack: " + ch.stats.attack + ch.GetModString(StatType.Attack);
         armor.text = "Armor: " + ch.stats.armor + ch.GetModString(StatType.Armor);
         dodge.text = "Dodge: " + ch.stats.dodge + ch.GetModString(StatType.Dodge);
-        accuracy.text = "Accuracy: " + ch.stats.accuracy + ch.GetModString(StatType.Accuracy);
+        accuracy.text = "Accuracy: " + ch.stats.accuracy + ch.GetPassiveString(StatType.Accuracy) + ch.GetModString(StatType.Accuracy);
         crit.text = "Crit: " + ch.stats.crit;
         initiative.text = "Initiative: " + ch.stats.initiative;
 
         health.text = "Health: " + ch.health + " / " + ch.stats.maxHealth;
-        currDodge.text = "Dodge: " + ch.currDodge;
+        currDodge.text = "Dodge: " + ch.currDodge + ch.GetPassiveString(StatType.Dodge);
         energy.text = "Energy: " + ch.energy + " / " + ch.stats.maxEnergy;
         currCrit.text = "Crit: " + ch.currCrit;
     }

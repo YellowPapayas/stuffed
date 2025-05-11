@@ -7,21 +7,19 @@ public class StatModConditional : Conditional
 
     public override bool CheckCondition(Character user, Character target)
     {
-        bool output = false;
         Character toCheck = checkUser ? user : target;
         foreach (StatModifier sm in toCheck.statMods)
         {
             if ((checkDebuff && sm.amount < 0) || (!checkDebuff && sm.amount > 0))
             {
-                output = true;
-                break;
+                return true;
             }
         }
-        return output;
+        return false;
     }
 
     public override string ConditionString()
     {
-        return "IF " + (checkUser ? "user" : "target") + " has a debuff:\n";
+        return "IF " + (checkUser ? "user" : "target") + " has a " + (checkDebuff ? "debuff" : "buff") + ":\n";
     }
 }

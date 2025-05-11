@@ -18,33 +18,35 @@ public abstract class Ability : ScriptableObject
 
     public abstract void AddActions();
 
-    public void Activate(Character user, Character target, bool isCrit)
+    public virtual void Activate(Character user, Character target, bool isCrit)
     {
         SetupActions(user, target, isCrit);
 
         foreach (AbilityAction act in actions)
         {
-            if(!act.Execute(user, target))
-            {
-                break;
-            }
+            act.Execute(user, target, DoesHit(user, target, isCrit));
         }
     }
 
-    public void SetupActions(Character user, Character target, bool isCrit)
+    public virtual bool DoesHit(Character user, Character target, bool isCrit)
+    {
+        return true;
+    }
+
+    public virtual void SetupActions(Character user, Character target, bool isCrit)
     {
         AddActions();
 
         foreach(ConditionalTuple ct in conditions) {
             if(ct.cond.CheckCondition(user, target))
             {
-                ct.effect.AddEffect(actions, user, target);
+                ct.effect.AddEffect(actions);
             }
         }
 
         if (isCrit)
         {
-            critEffect.AddEffect(actions, user, target);
+            critEffect.AddEffect(actions);
         }
     }
 
@@ -78,34 +80,37 @@ public abstract class Ability : ScriptableObject
         {
             if (ct.cond.CheckCondition(user, target))
             {
-                ct.effect.AddEffect(actions, user, target);
+                ct.effect.AddEffect(actions);
             }
         }
 
         if (isCrit)
         {
-            critEffect.AddEffect(actions, user, target);
+            critEffect.AddEffect(actions);
         }
 
         string actText = "";
-        for (int i = 0; i < actions.Count; i++)
+        if (!DoesHit(user, target, isCrit))
         {
-            AbilityAction act = actions[i];
-            actText += act.GetActionText(user, target);
-            if(actText.Equals("<color=green>DODGED</color>"))
+            actText += "<color=green>DODGED</color>\n";
+        }
+        else
+        {
+            for (int i = 0; i < actions.Count; i++)
             {
-                break;
-            }
-            if(i < actions.Count - 1)
-            {
-                actText += "\n";
+                AbilityAction act = actions[i];
+                actText += act.GetActionText(user, target, DoesHit(user, target, isCrit));
+                if (i < actions.Count - 1)
+                {
+                    actText += "\n";
+                }
             }
         }
 
         target.DisplayActionPerm(actText);
     }
 
-    public (float, float) CalcActionValue(Character user, Character target, ActionValues mults)
+    public virtual (float, float) CalcActionValue(Character user, Character target, ActionValues mults)
     {
         AddActions();
 
@@ -113,64 +118,22 @@ public abstract class Ability : ScriptableObject
         {
             if (ct.cond.CheckCondition(user, target))
             {
-                ct.effect.AddEffect(actions, user, target);
+                ct.effect.AddEffect(actions);
             }
         }
 
         float total = 0f;
         foreach (AbilityAction act in actions)
         {
-            total += act.GetActionValue(user, target, mults);
-            if(act is DamageAction dmg)
-            {
-                if(!dmg.props.DoesHit(user, target))
-                {
-                    break;
-                }
-            }
-            if (act is DebuffAction db)
-            {
-                if (!db.accProps.DoesHit(user, target))
-                {
-                    break;
-                }
-            }
-            if (act is RemoveValueAction rv)
-            {
-                if (!rv.props.DoesHit(user, target))
-                {
-                    break;
-                }
-            }
+            total += act.GetActionValue(user, target, DoesHit(user, target, false), mults);
         }
 
-        critEffect.AddEffect(actions, user, target);
+        critEffect.AddEffect(actions);
 
         float critTotal = 0f;
         foreach (AbilityAction act in actions)
         {
-            critTotal += act.GetActionValue(user, target, mults);
-            if (act is DamageAction dmg)
-            {
-                if (!dmg.props.DoesHit(user, target))
-                {
-                    break;
-                }
-            }
-            if (act is DebuffAction db)
-            {
-                if (!db.accProps.DoesHit(user, target))
-                {
-                    break;
-                }
-            }
-            if (act is RemoveValueAction rv)
-            {
-                if (!rv.props.DoesHit(user, target))
-                {
-                    break;
-                }
-            }
+            critTotal += act.GetActionValue(user, target, DoesHit(user, target, true), mults);
         }
 
         return (total, critTotal);

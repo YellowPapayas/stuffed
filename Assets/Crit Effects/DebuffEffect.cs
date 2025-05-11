@@ -6,24 +6,18 @@ public class DebuffEffect : AbilityEffect
 {
     public List<StatModifier> debuffs;
 
-    public override void AddEffect(List<AbilityAction> actions, Character user, Character target)
+    public override void AddEffect(List<AbilityAction> actions)
     {
         for (int i = 0; i < actions.Count; i++)
         {
             AbilityAction act = actions[i];
-            if (act is DamageAction dmg)
-            {
-                if (dmg.props.DoesHit(user, target))
-                {
-                    actions.Add(new DebuffAction(debuffs, target.currDodge + 100));
-                }
-                break;
-            }
             if (act is DebuffAction db)
             {
                 db.statMods.AddRange(debuffs);
+                break;
             }
         }
+        actions.Add(new DebuffAction(debuffs));
     }
 
     public override string AddDescription()

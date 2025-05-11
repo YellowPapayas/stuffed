@@ -10,16 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f56815b43c76d18419212b6d9f38031e, type: 3}
-  m_Name: Weakpoint
+  m_Name: Frostbolt
   m_EditorClassIdentifier: 
-  abilityName: Expose Weakpoint
+  abilityName: Frostbolt
   abilityImage: {fileID: 0}
   targetType: 0
-  energyCost: 1
+  energyCost: 2
   critCost: 2
-  critEffect: {fileID: 11400000, guid: 4ff59f62896c71d489d237c621dc6c50, type: 2}
-  conditions: []
+  critEffect: {fileID: 11400000, guid: 1675017befe995446817a12eee58ba76, type: 2}
+  conditions:
+  - cond: {fileID: 11400000, guid: a5b199a4a306a9a46b84cb0fe292852f, type: 2}
+    effect: {fileID: 11400000, guid: 78bcf7eb10f7be541854df56de4591cf, type: 2}
   accuracy: 80
   effects:
-  - {fileID: 11400000, guid: 8a6a4efc314070242bce76f235c6c0df, type: 2}
-  - {fileID: 11400000, guid: a0e2a377624e27340abcf6006cbf3eff, type: 2}
+  - {fileID: 11400000, guid: 049d59e7a977e3b48af2753f283c0814, type: 2}

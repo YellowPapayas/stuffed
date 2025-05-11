@@ -6,20 +6,9 @@ public class AccuracyEffect : AbilityEffect
 {
     public int accMod;
 
-    public override void AddEffect(List<AbilityAction> actions, Character user, Character target)
+    public override void AddEffect(List<AbilityAction> actions)
     {
-        for (int i = 0; i < actions.Count; i++)
-        {
-            AbilityAction act = actions[i];
-            if (act is DamageAction dmg)
-            {
-                dmg.props.accuracy += accMod;
-            }
-            if (act is DebuffAction db)
-            {
-                db.accProps.accuracy += accMod;
-            }
-        }
+        // do nothing
     }
 
     public override string AddDescription()

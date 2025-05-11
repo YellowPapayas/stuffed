@@ -29,6 +29,7 @@ public class Character : MonoBehaviour, IClickable
     public int currDodge;
     public int currCrit;
     public List<StatModifier> statMods;
+    public List<PassiveModifier> passiveMods;
 
     BoxCollider2D coll;
     List<Character> affectedText;
@@ -88,20 +89,32 @@ public class Character : MonoBehaviour, IClickable
         statusBar.UpdateView();
     }
 
-    public bool OnDebuffsHit(List<StatModifier> debuffs, int acc)
+    public void OnDebuffsHit(List<StatModifier> debuffs)
     {
-        if (acc > currDodge)
+        foreach (StatModifier statMod in debuffs)
         {
-            foreach (StatModifier statMod in debuffs)
-            {
-                AddStatus(statMod.DeepCopy());
-            }
-            return true;
+            AddStatus(statMod.DeepCopy());
         }
-        else
+    }
+
+    public int GetDodge()
+    {
+        int dodgeMod = passiveMods.Where(mod => mod.type == StatType.Dodge).Sum(mod => mod.amount);
+        return currDodge + dodgeMod;
+    }
+
+    public bool AccuracyCheck(int acc)
+    {
+        if(acc > GetDodge())
         {
-            justDodged = true;
+            return true;
+        } else
+        {
             currDodge -= acc;
+            if(currDodge < 0)
+            {
+                currDodge = 0;
+            }
             return false;
         }
     }
@@ -116,7 +129,12 @@ public class Character : MonoBehaviour, IClickable
     {
         int baseVal = stats.GetStat(st);
         int mod = statMods.Where(m => m.type == st).Sum(m => m.amount);
-        return baseVal + mod;
+        int passMod = 0;
+        if (st != StatType.Dodge)
+        {
+            passMod = passiveMods.Where(mod => mod.type == st).Sum(mod => mod.amount);
+        }
+        return baseVal + mod + passMod;
     }
 
     public string GetStatString(StatType st)
@@ -152,6 +170,23 @@ public class Character : MonoBehaviour, IClickable
         else if (modamount < 0)
         {
             return $" <color=red>({modamount})</color>";
+        }
+        else
+        {
+            return "";
+        }
+    }
+
+    public string GetPassiveString(StatType st)
+    {
+        int modamount = passiveMods.Where(m => m.type == st).Sum(m => m.amount); ;
+        if (modamount > 0)
+        {
+            return $" <color=#CCFF00>(+{modamount})</color>";
+        }
+        else if (modamount < 0)
+        {
+            return $" <color=#FFCC00>({modamount})</color>";
         }
         else
         {
@@ -225,19 +260,10 @@ public class Character : MonoBehaviour, IClickable
         justDodged = false;
     }
 
-    public bool OnHit(int damage, int acc)
+    public void OnHit(int damage)
     {
         int armorDmg = calcArmorDamage(damage);
-        if (acc > currDodge)
-        {
-            Damage(armorDmg);
-            return true;
-        } else
-        {
-            justDodged = true;
-            currDodge -= acc;
-            return false;
-        }
+        Damage(armorDmg);
     }
 
     public int GetCurrentValue(CurrentValue cv)
@@ -255,39 +281,30 @@ public class Character : MonoBehaviour, IClickable
         }
     }
 
-    public bool OnRemoveValue(List<ValueModifier> valMods, int acc)
+    public void OnRemoveValue(List<ValueModifier> valMods)
     {
-        if (acc > currDodge)
+        foreach (ValueModifier valMod in valMods)
         {
-            foreach (ValueModifier valMod in valMods)
+            switch (valMod.value)
             {
-                switch (valMod.value)
-                {
-                    case CurrentValue.Dodge:
-                        currDodge -= valMod.amount;
-                        if (currDodge < 0)
-                        {
-                            currDodge = 0;
-                        }
-                        break;
-                    case CurrentValue.Energy:
-                        energy -= valMod.amount;
-                        break;
-                    case CurrentValue.Crit:
-                        currCrit -= valMod.amount;
-                        if (currCrit < 0)
-                        {
-                            currCrit = 0;
-                        }
-                        break;
-                }
+                case CurrentValue.Dodge:
+                    currDodge -= valMod.amount;
+                    if (currDodge < 0)
+                    {
+                        currDodge = 0;
+                    }
+                    break;
+                case CurrentValue.Energy:
+                    energy -= valMod.amount;
+                    break;
+                case CurrentValue.Crit:
+                    currCrit -= valMod.amount;
+                    if (currCrit < 0)
+                    {
+                        currCrit = 0;
+                    }
+                    break;
             }
-            return true;
-        } else
-        {
-            justDodged = true;
-            currDodge -= acc;
-            return false;
         }
     }
 
@@ -374,11 +391,6 @@ public class Character : MonoBehaviour, IClickable
         return max;
     }
 
-    public void DisplayAbilityAction(string action)
-    {
-        actionText.DisplayText(action, 300);
-    }
-
     public void DisplayActionPerm(string perm)
     {
         actionText.PermText(perm);
@@ -427,6 +439,23 @@ public class Character : MonoBehaviour, IClickable
                 ch.ActionOff();
             }
         }
+    }
+}
+
+[System.Serializable]
+public class PassiveModifier
+{
+    public StatType type;
+    public int amount;
+
+    public PassiveModifier(StatType st, int am)
+    {
+        type = st; amount = am;
+    }
+
+    public PassiveModifier DeepCopy()
+    {
+        return new PassiveModifier(type, amount);
     }
 }
 

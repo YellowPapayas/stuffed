@@ -46,6 +46,18 @@ public class LineManager : MonoBehaviour
             {
                 child.position = new Vector3(line.transform.position.x, startPoint + (spacing * num), line.transform.position.z);
                 num += 1;
+
+                Character childChar = child.gameObject.GetComponent<Character>();
+                if (line == leftFront || line == rightFront)
+                {
+                    childChar.passiveMods.Add(new PassiveModifier(StatType.Accuracy, 10));
+                    childChar.passiveMods.Add(new PassiveModifier(StatType.Dodge, -10));
+                }
+                if (line == leftBack || line == rightBack)
+                {
+                    childChar.passiveMods.Add(new PassiveModifier(StatType.Accuracy, -10));
+                    childChar.passiveMods.Add(new PassiveModifier(StatType.Dodge, 10));
+                }
             }
         }
     }

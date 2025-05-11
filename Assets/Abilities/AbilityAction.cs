@@ -3,57 +3,44 @@ using System.Collections.Generic;
 
 public abstract class AbilityAction
 {
-    public abstract bool Execute(Character user, Character target);
+    public abstract void Execute(Character user, Character target, bool doesHit);
 
-    public abstract string GetActionText(Character user, Character target);
+    public abstract string GetActionText(Character user, Character target, bool doesHit);
 
-    public abstract float GetActionValue(Character user, Character target, ActionValues mults);
-}
-
-public class EnemyTargetProps
-{
-    public int accuracy;
-
-    public int TotalAccuracy(Character user)
-    {
-        return accuracy + user.GetStat(StatType.Accuracy);
-    }
-
-    public bool DoesHit(Character user, Character target)
-    {
-        return accuracy + user.GetStat(StatType.Accuracy) > target.currDodge;
-    }
+    public abstract float GetActionValue(Character user, Character target, bool doesHit, ActionValues mults);
 }
 
 public class DamageAction : AbilityAction
 {
     public float attackRatio;
-    public EnemyTargetProps props = new EnemyTargetProps();
 
-    public DamageAction(float ratio, int accuracy)
+    public DamageAction(float ratio)
     {
         this.attackRatio = ratio;
-        props.accuracy = accuracy;
     }
 
-    public override bool Execute(Character user, Character target)
+    public override void Execute(Character user, Character target, bool doesHit)
     {
-        return target.OnHit(Mathf.FloorToInt(user.GetStat(StatType.Attack) * attackRatio), props.TotalAccuracy(user));
-    }
-
-    public override string GetActionText(Character user, Character target)
-    {
-        if (props.DoesHit(user, target)) {
-            return $"<color=red>{target.calcArmorDamage(Mathf.FloorToInt(user.GetStat(StatType.Attack) * attackRatio))}</color>";
-        } else
+        if (doesHit)
         {
-            return $"<color=green>DODGED</color>";
+            target.OnHit(Mathf.FloorToInt(user.GetStat(StatType.Attack) * attackRatio));
         }
     }
 
-    public override float GetActionValue(Character user, Character target, ActionValues mults)
+    public override string GetActionText(Character user, Character target, bool doesHit)
     {
-        if (props.DoesHit(user, target))
+        if (doesHit)
+        {
+            return $"<color=red>{target.calcArmorDamage(Mathf.FloorToInt(user.GetStat(StatType.Attack) * attackRatio))}</color>";
+        } else
+        {
+            return "";
+        }
+    }
+
+    public override float GetActionValue(Character user, Character target, bool doesHit, ActionValues mults)
+    {
+        if (doesHit)
         {
             int calcDmg = target.calcArmorDamage(Mathf.FloorToInt(user.GetStat(StatType.Attack) * attackRatio));
             int targetMaxHealth = target.stats.maxHealth;
@@ -62,36 +49,35 @@ public class DamageAction : AbilityAction
             return percentDmg * mults.dmgValue;
         } else
         {
-            float percentDodge = 10 * ((float)props.accuracy) / target.currDodge;
-            return percentDodge * mults.removeValue;
+            return 0;
         }
     }
 }
 
 public class DebuffAction : AbilityAction
 {
-    public EnemyTargetProps accProps = new EnemyTargetProps();
     public List<StatModifier> statMods = new List<StatModifier>();
 
-    public DebuffAction(List<StatModifier> mods, int accuracy)
+    public DebuffAction(List<StatModifier> mods)
     {
         statMods = new List<StatModifier>();
         foreach (StatModifier sm in mods)
         {
             statMods.Add(sm.DeepCopy());
         }
-
-        accProps.accuracy = accuracy;
     }
 
-    public override bool Execute(Character user, Character target)
+    public override void Execute(Character user, Character target, bool doesHit)
     {
-        return target.OnDebuffsHit(statMods, accProps.TotalAccuracy(user));
+        if (doesHit)
+        {
+            target.OnDebuffsHit(statMods);
+        }
     }
 
-    public override string GetActionText(Character user, Character target)
+    public override string GetActionText(Character user, Character target, bool doesHit)
     {
-        if (accProps.DoesHit(user, target))
+        if (doesHit)
         {
             string output = "";
             for (int i = 0; i < statMods.Count; i++)
@@ -104,27 +90,26 @@ public class DebuffAction : AbilityAction
                 }
             }
             return output;
-        }
-        else
+        } else
         {
-            return $"<color=green>DODGED</color>";
+            return "";
         }
     }
 
-    public override float GetActionValue(Character user, Character target, ActionValues mults)
+    public override float GetActionValue(Character user, Character target, bool doesHit, ActionValues mults)
     {
-        if (accProps.DoesHit(user, target))
+        if (doesHit)
         {
             float output = 0f;
             foreach (StatModifier sm in statMods)
             {
                 int stat = target.GetStat(sm.type);
-                if(stat == 0)
+                if (stat == 0)
                 {
                     stat = 1;
                 }
                 float percentDebuff = sm.rounds * ((float)sm.amount) / stat;
-                if(percentDebuff < 0)
+                if (percentDebuff < 0)
                 {
                     percentDebuff *= -1;
                 }
@@ -133,8 +118,7 @@ public class DebuffAction : AbilityAction
             return output;
         } else
         {
-            float percentDodge = 10 * ((float)accProps.accuracy) / target.currDodge;
-            return percentDodge * mults.removeValue;
+            return 0f;
         }
     }
 }
@@ -152,7 +136,7 @@ public class BuffAction : AbilityAction
         }
     }
 
-    public override bool Execute(Character user, Character target)
+    public override void Execute(Character user, Character target, bool doesHit)
     {
         foreach (StatModifier statMod in statMods)
         {
@@ -162,10 +146,9 @@ public class BuffAction : AbilityAction
             }
             target.AddStatus(statMod.DeepCopy());
         }
-        return true;
     }
 
-    public override string GetActionText(Character user, Character target)
+    public override string GetActionText(Character user, Character target, bool doesHit)
     {
         string output = "";
         for (int i = 0; i < statMods.Count; i++)
@@ -180,7 +163,7 @@ public class BuffAction : AbilityAction
         return output;
     }
 
-    public override float GetActionValue(Character user, Character target, ActionValues mults)
+    public override float GetActionValue(Character user, Character target, bool doesHit, ActionValues mults)
     {
         float output = 0f;
         foreach (StatModifier sm in statMods)
@@ -210,18 +193,17 @@ public class HealAction : AbilityAction
         this.healRatio = ratio;
     }
 
-    public override bool Execute(Character user, Character target)
+    public override void Execute(Character user, Character target, bool doesHit)
     {
         target.OnHeal(Mathf.FloorToInt(user.GetStat(StatType.Attack) * healRatio));
-        return true;
     }
 
-    public override string GetActionText(Character user, Character target)
+    public override string GetActionText(Character user, Character target, bool doesHit)
     {
         return $"<color=green>{Mathf.FloorToInt(user.GetStat(StatType.Attack) * healRatio)}</color>";
     }
 
-    public override float GetActionValue(Character user, Character target, ActionValues mults)
+    public override float GetActionValue(Character user, Character target, bool doesHit, ActionValues mults)
     {
         float calcHeal = Mathf.FloorToInt(user.GetStat(StatType.Attack)) * healRatio;
         int targetMaxHealth = target.stats.maxHealth;
@@ -234,22 +216,23 @@ public class HealAction : AbilityAction
 public class RemoveValueAction : AbilityAction
 {
     public List<ValueModifier> valueMods = new List<ValueModifier>();
-    public EnemyTargetProps props = new EnemyTargetProps();
 
-    public RemoveValueAction(List<ValueModifier> mods, int acc)
+    public RemoveValueAction(List<ValueModifier> mods)
     {
         valueMods = mods;
-        props.accuracy = acc;
     }
 
-    public override bool Execute(Character user, Character target)
+    public override void Execute(Character user, Character target, bool doesHit)
     {
-        return target.OnRemoveValue(valueMods, props.TotalAccuracy(user));
+        if (doesHit)
+        {
+            target.OnRemoveValue(valueMods);
+        }
     }
 
-    public override string GetActionText(Character user, Character target)
+    public override string GetActionText(Character user, Character target, bool doesHit)
     {
-        if (props.DoesHit(user, target))
+        if (doesHit)
         {
             string output = "";
             for (int i = 0; i < valueMods.Count; i++)
@@ -262,23 +245,22 @@ public class RemoveValueAction : AbilityAction
                 }
             }
             return output;
-        }
-        else
+        } else
         {
-            return $"<color=green>DODGED</color>";
+            return "";
         }
     }
 
-    public override float GetActionValue(Character user, Character target, ActionValues mults)
+    public override float GetActionValue(Character user, Character target, bool doesHit, ActionValues mults)
     {
-        if (props.DoesHit(user, target))
+        if (doesHit)
         {
             float output = 0f;
             foreach (ValueModifier vm in valueMods)
             {
                 int diff = target.GetCurrentValue(vm.value) + vm.amount;
                 float percentRemove = (((float)vm.amount) / diff);
-                if(percentRemove < 0)
+                if (percentRemove < 0)
                 {
                     percentRemove *= -1f;
                 }
@@ -287,8 +269,7 @@ public class RemoveValueAction : AbilityAction
             return output;
         } else
         {
-            float percentDodge = 10 * ((float)props.accuracy) / target.currDodge;
-            return percentDodge * mults.removeValue;
+            return 0;
         }
     }
 }
@@ -302,13 +283,12 @@ public class AddValueAction : AbilityAction
         valueMods = mods;
     }
 
-    public override bool Execute(Character user, Character target)
+    public override void Execute(Character user, Character target, bool doesHit)
     {
         target.OnAddValue(valueMods);
-        return true;
     }
 
-    public override string GetActionText(Character user, Character target)
+    public override string GetActionText(Character user, Character target, bool doesHit)
     {
         string output = "";
         for (int i = 0; i < valueMods.Count; i++)
@@ -323,7 +303,7 @@ public class AddValueAction : AbilityAction
         return output;
     }
 
-    public override float GetActionValue(Character user, Character target, ActionValues mults)
+    public override float GetActionValue(Character user, Character target, bool doesHit, ActionValues mults)
     {
         float output = 0f;
         foreach (ValueModifier vm in valueMods)
@@ -342,7 +322,7 @@ public class AddValueAction : AbilityAction
 
 public class RemoveDebuffAction : AbilityAction
 {
-    public override bool Execute(Character user, Character target)
+    public override void Execute(Character user, Character target, bool doesHit)
     {
         for (int i = target.statMods.Count - 1; i >= 0; i--)
         {
@@ -351,15 +331,14 @@ public class RemoveDebuffAction : AbilityAction
                 target.RemoveStatusIndex(i);
             }
         }
-        return true;
     }
 
-    public override string GetActionText(Character user, Character target)
+    public override string GetActionText(Character user, Character target, bool doesHit)
     {
         return $"<color=green>-DEBUFFS</color>";
     }
 
-    public override float GetActionValue(Character user, Character target, ActionValues mults)
+    public override float GetActionValue(Character user, Character target, bool doesHit, ActionValues mults)
     {
         float output = 0f;
         foreach (StatModifier sm in target.statMods)
