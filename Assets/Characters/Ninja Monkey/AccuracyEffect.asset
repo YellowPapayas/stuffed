@@ -12,5 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e062995d5e4a8344eb08fdeb4e711051, type: 3}
   m_Name: AccuracyEffect
   m_EditorClassIdentifier: 
-  critCost: 2
-  accMod: 8
+  accMod: 10

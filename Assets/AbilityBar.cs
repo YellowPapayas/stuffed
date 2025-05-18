@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AbilityBar : MonoBehaviour
 {
@@ -8,6 +9,15 @@ public class AbilityBar : MonoBehaviour
     void Start()
     {
         
+    }
+
+    public void UpdateView()
+    {
+        foreach (Transform child in transform)
+        {
+            AbilityButton buttonUI = child.gameObject.GetComponent<AbilityButton>();
+            buttonUI.UpdateView();
+        }
     }
 
     public void DisplayAbilities(Character user)

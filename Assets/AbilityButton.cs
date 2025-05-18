@@ -6,6 +6,7 @@ public class AbilityButton : MonoBehaviour
 {
     Ability ability;
     TMP_Text text;
+    TMP_Text cooldown;
     Character user;
     Image icon;
 
@@ -22,8 +23,29 @@ public class AbilityButton : MonoBehaviour
         user = ch;
         text = transform.Find("Ability Name").gameObject.GetComponent<TMP_Text>();
         text.text = ab.abilityName;
+        cooldown = transform.Find("Cooldown Text").gameObject.GetComponent<TMP_Text>();
         icon = GetComponent<Image>();
         icon.sprite = ab.abilityImage;
+
+        UpdateView();
+    }
+
+    public void UpdateView()
+    {
+        Button button = gameObject.GetComponent<Button>();
+
+        if (ability.CanUse())
+        {
+            button.interactable = true;
+        } else
+        {
+            button.interactable = false;
+        }
+
+        if (ability.IsOnCooldown())
+        {
+            cooldown.text = "" + ability.GetCooldown();
+        }
     }
 
     public void OnClick()

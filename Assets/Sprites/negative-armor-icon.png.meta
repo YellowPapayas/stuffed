@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      negative-armor-icon_0: 5034280711657175865
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -12,6 +12,14 @@ public abstract class Ability : ScriptableObject
     public int energyCost;
     public int critCost;
 
+    public int cooldown = 0;
+    int currCooldown = 0;
+    bool putOnCooldown = false;
+
+    // <=0 means it can be used as many times as possible per turn
+    public int usesPerTurn = 0;
+    int currUses = 0;
+
     public AbilityEffect critEffect;
     public List<AbilityAction> actions;
     public List<ConditionalTuple> conditions;
@@ -26,6 +34,9 @@ public abstract class Ability : ScriptableObject
         {
             act.Execute(user, target, DoesHit(user, target, isCrit));
         }
+
+        putOnCooldown = true;
+        currUses += 1;
     }
 
     public virtual bool DoesHit(Character user, Character target, bool isCrit)
@@ -64,7 +75,18 @@ public abstract class Ability : ScriptableObject
             conds += ct.cond.ConditionString();
             conds += ct.effect.AddDescription() + (i < conditions.Count-1 ? "\n" : "");
         }
-        return $"<color=#FFBB00>{energyCost} Energy</color>" + FormatDescription(user) + (conditions.Count > 0 ? "\n" + conds : "");
+        string important = "";
+        if (usesPerTurn > 0)
+        {
+            important += $"Uses per Turn: {usesPerTurn}";
+        }
+        if (usesPerTurn > 0 && cooldown > 0) {
+            important += " / ";
+        }
+        if (cooldown > 0) {
+            important += $"Cooldown: {cooldown}";
+        }
+        return $"<color=#FFBB00>{energyCost} Energy</color> " + important + FormatDescription(user) + (conditions.Count > 0 ? "\n" + conds : "");
     }
 
     public string CritDescription(Character user)
@@ -163,6 +185,44 @@ public abstract class Ability : ScriptableObject
             default:
                 return "";
         }
+    }
+
+    public void ShouldCooldown()
+    {
+        if (putOnCooldown)
+        {
+            currCooldown = cooldown;
+            putOnCooldown = false;
+        } else if(IsOnCooldown())
+        {
+            currCooldown -= 1;
+        }
+    }
+
+    public void ResetUses()
+    {
+        currUses = 0;
+    }
+
+    public bool IsOnCooldown()
+    {
+        return currCooldown > 0;
+    }
+
+    public int GetCooldown()
+    {
+        return currCooldown;
+    }
+
+    public bool CanUse()
+    {
+        return !IsOnCooldown() && (usesPerTurn <= 0 || currUses < usesPerTurn);
+    }
+
+    public void CompleteReset()
+    {
+        currCooldown = 0;
+        ResetUses();
     }
 }
 

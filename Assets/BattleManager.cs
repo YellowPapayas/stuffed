@@ -24,6 +24,8 @@ public class BattleManager : MonoBehaviour
     public bool pendingCrit = false;
     public Ability lastClickedAbility = null;
 
+    public int dodgeCap;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -202,11 +204,12 @@ public class BattleManager : MonoBehaviour
                     StopTargeting();
                     yield return StartCoroutine(dm.ShowAbilityUse(pendingChar, saveAbility, targets));
                     yield return new WaitForSeconds(0.1f);
-                    dm.SetActionDuration(targets, 400);
+                    dm.SetActionDuration(targets, 800);
                     foreach (Character ch in targets)
                     {
                         saveAbility.Activate(pendingChar, ch, pendingCrit);
                     }
+                    GameObject.Find("AbilityBar").GetComponent<AbilityBar>().UpdateView();
                     click.paused = false;
                 } else
                 {

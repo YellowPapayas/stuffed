@@ -15,5 +15,5 @@ MonoBehaviour:
   debuffs:
   - type: 1
     amount: -10
-    rounds: 2
+    rounds: 1
     removeThisRound: 0

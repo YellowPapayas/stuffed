@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f56815b43c76d18419212b6d9f38031e, type: 3}
+  m_Name: Claw
+  m_EditorClassIdentifier: 
+  abilityName: Claw
+  abilityImage: {fileID: 0}
+  targetType: 0
+  energyCost: 1
+  critCost: 2
+  cooldown: 0
+  usesPerTurn: 0
+  critEffect: {fileID: 11400000, guid: 4e8ad0f9412f27849ac446f9d142e158, type: 2}
+  conditions: []
+  accuracy: 65
+  effects:
+  - {fileID: 11400000, guid: 144f971f201712d498840f893436a60b, type: 2}

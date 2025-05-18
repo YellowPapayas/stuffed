@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f56815b43c76d18419212b6d9f38031e, type: 3}
+  m_Name: Grab
+  m_EditorClassIdentifier: 
+  abilityName: Grab
+  abilityImage: {fileID: 0}
+  targetType: 0
+  energyCost: 1
+  critCost: 2
+  cooldown: 0
+  usesPerTurn: 0
+  critEffect: {fileID: 11400000, guid: 1b64fe807559c174b979d5efc3b58261, type: 2}
+  conditions: []
+  accuracy: 80
+  effects:
+  - {fileID: 11400000, guid: 178f0cb2082feff47879a79f666186ac, type: 2}
+  - {fileID: 11400000, guid: f59c7a45f0cf2ba459159690a0d34ed2, type: 2}

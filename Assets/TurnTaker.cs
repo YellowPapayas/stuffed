@@ -65,7 +65,7 @@ public class EnemyTurn : TurnTaker
             options = new List<AbilityOption>();
             foreach (Ability ab in character.abilities)
             {
-                if (ab.energyCost <= energyAmount)
+                if (ab.energyCost <= energyAmount && ab.CanUse())
                 {
                     options.AddRange(TargetValues(ab, character));
                 }

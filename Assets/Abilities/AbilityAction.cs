@@ -361,3 +361,103 @@ public class RemoveDebuffAction : AbilityAction
         return output;
     }
 }
+
+public class AddTokenAction : AbilityAction
+{
+    public List<TokenObject> tokens = new List<TokenObject>();
+
+    public AddTokenAction(List<TokenObject> tokenList)
+    {
+        tokens.AddRange(tokenList);
+    }
+
+    public override void Execute(Character user, Character target, bool doesHit)
+    {
+        if (doesHit)
+        {
+            foreach (TokenObject token in tokens)
+            {
+                target.AddToken(token, user);
+            }
+        }
+    }
+
+    public override string GetActionText(Character user, Character target, bool doesHit)
+    {
+        if(!doesHit)
+        {
+            return "";
+        }
+        string output = "<color=yellow>";
+        for(int i = 0; i < tokens.Count; i++)
+        {
+            TokenObject token = tokens[i];
+            output += $"+{token.tokenName} TOKEN";
+            if(i < tokens.Count - 1)
+            {
+                output += "\n";
+            }
+        }
+        return output;
+    }
+
+    public override float GetActionValue(Character user, Character target, bool doesHit, ActionValues mults)
+    {
+        if (!doesHit)
+        {
+            return 0f;
+        }
+        float output = 0f;
+        foreach (TokenObject token in tokens)
+        {
+            List<AbilityAction> tokenActions = new List<AbilityAction>();
+            token.effect.AddEffect(tokenActions);
+            foreach (AbilityAction action in tokenActions)
+            {
+                output += action.GetActionValue(user, target, doesHit, mults);
+            }
+        }
+        return output;
+    }
+}
+
+public class ActivateTokenAction : AbilityAction
+{
+    public override void Execute(Character user, Character target, bool doesHit)
+    {
+        if (doesHit)
+        {
+            target.OnActivateToken();
+        }
+    }
+
+    public override string GetActionText(Character user, Character target, bool doesHit)
+    {
+        string output = "";
+        foreach (TokenTuple token in target.tokens)
+        {
+            List<AbilityAction> tokenActions = new List<AbilityAction>();
+            token.effect.AddEffect(tokenActions);
+            foreach (AbilityAction action in tokenActions)
+            {
+                output += action.GetActionText(user, target, doesHit);
+            }
+        }
+        return output;
+    }
+
+    public override float GetActionValue(Character user, Character target, bool doesHit, ActionValues mults)
+    {
+        float output = 0f;
+        foreach (TokenTuple token in target.tokens)
+        {
+            List<AbilityAction> tokenActions = new List<AbilityAction>();
+            token.effect.AddEffect(tokenActions);
+            foreach (AbilityAction action in tokenActions)
+            {
+                output += action.GetActionValue(user, target, doesHit, mults);
+            }
+        }
+        return output;
+    }
+}

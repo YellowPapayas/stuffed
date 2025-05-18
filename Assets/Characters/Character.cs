@@ -10,6 +10,7 @@ public class Character : MonoBehaviour, IClickable
     GameObject target;
     TemporaryText actionText;
     StatusBar statusBar;
+    TokenBar tokenBar;
 
     Color highlightColor = new Color(228 / 255f, 1f, 0f, 120 / 255f);
     Color turnColor = new Color(120 / 255f, 180 / 255f, 120 / 255f, 90 / 255f);
@@ -27,9 +28,11 @@ public class Character : MonoBehaviour, IClickable
     public int health;
     public int energy;
     public int currDodge;
+    int dodgeCap;
     public int currCrit;
     public List<StatModifier> statMods;
     public List<PassiveModifier> passiveMods;
+    public List<TokenTuple> tokens;
 
     BoxCollider2D coll;
     List<Character> affectedText;
@@ -38,6 +41,7 @@ public class Character : MonoBehaviour, IClickable
     void Start()
     {
         health = stats.maxHealth;
+        energy = stats.maxEnergy;
         coll = GetComponent<BoxCollider2D>();
         
         bar = transform.Find("Canvas").Find("Backbar").Find("Healthbar").gameObject.GetComponent<Healthbar>();
@@ -46,6 +50,7 @@ public class Character : MonoBehaviour, IClickable
         target = transform.Find("Canvas").Find("Target").gameObject;
         target.SetActive(false);
         statusBar = transform.Find("Overlay").Find("Status Bar").gameObject.GetComponent<StatusBar>();
+        tokenBar = transform.Find("Overlay").Find("Token Bar").gameObject.GetComponent<TokenBar>();
         actionText = transform.Find("Overlay").Find("Action Text").gameObject.GetComponent<TemporaryText>();
 
         bm = GameObject.Find("BattleManager").GetComponent<BattleManager>();
@@ -59,6 +64,14 @@ public class Character : MonoBehaviour, IClickable
         }
 
         statMods = new List<StatModifier>();
+        tokens = new List<TokenTuple>();
+
+        foreach(Ability ab in abilities)
+        {
+            ab.CompleteReset();
+        }
+
+        dodgeCap = bm.dodgeCap;
     }
 
     public void SetHighlight(bool show)
@@ -81,6 +94,14 @@ public class Character : MonoBehaviour, IClickable
             light.color = highlightColor;
             highlight.SetActive(show);
         }
+    }
+
+    public void AddToken(TokenObject tokenObject, Character applier)
+    {
+        TokenTuple tokenTuple = new TokenTuple(tokenObject.actionCondition, tokenObject.conditionAmount, tokenObject.effect, applier);
+        tokens.Add(tokenTuple);
+
+        tokenBar.AddToken(tokenObject);
     }
 
     public void AddStatus(StatModifier statMod)
@@ -199,15 +220,6 @@ public class Character : MonoBehaviour, IClickable
         isTurn = true;
         SetHighlight(false);
 
-        energy += stats.maxEnergy;
-        if (energy > stats.maxEnergy)
-        {
-            energy = stats.maxEnergy;
-        } else if (energy < 0)
-        {
-            energy = 0;
-        }
-
         currCrit += stats.crit;
         if (currCrit > stats.crit * 10)
         {
@@ -233,19 +245,30 @@ public class Character : MonoBehaviour, IClickable
                 }
             }
         }
+
+        foreach(Ability ab in abilities)
+        {
+            ab.ShouldCooldown();
+            ab.ResetUses();
+        }
+
+        energy = stats.maxEnergy;
     }
 
     public void OnGeneralTurnEnd()
     {
         if (!justDodged)
         {
-            if (currDodge < stats.dodge * 10)
+            if (currDodge + GetStat(StatType.Dodge) < dodgeCap)
             {
-                currDodge += stats.dodge;
+                if (GetStat(StatType.Dodge) > 0)
+                {
+                    currDodge += GetStat(StatType.Dodge);
+                }
             }
             else
             {
-                currDodge = stats.dodge * 10;
+                currDodge = dodgeCap;
             }
         }
 
@@ -264,6 +287,35 @@ public class Character : MonoBehaviour, IClickable
     {
         int armorDmg = calcArmorDamage(damage);
         Damage(armorDmg);
+    }
+
+    public void OnActivateToken()
+    {
+        UpdateTokens(ActionCondition.OnActivateToken);
+    }
+
+    void UpdateTokens(ActionCondition actCond)
+    {
+        for(int i = 0; i < tokens.Count; i++)
+        {
+            TokenTuple tuple = tokens[i];
+            if(tuple.actionCondition == actCond)
+            {
+                tuple.amount -= 1;
+                if(tuple.amount <= 0)
+                {
+                    tuple.Execute(tuple.applicant, this);
+                    RemoveToken(i);
+                    i--;
+                }
+            }
+        }
+    }
+
+    void RemoveToken(int pos)
+    {
+        tokens.RemoveAt(pos);
+        tokenBar.RemoveToken(pos);
     }
 
     public int GetCurrentValue(CurrentValue cv)
@@ -316,9 +368,9 @@ public class Character : MonoBehaviour, IClickable
             {
                 case CurrentValue.Dodge:
                     currDodge += valMod.amount;
-                    if (currDodge > stats.dodge * 10)
+                    if (currDodge > dodgeCap)
                     {
-                        currDodge = stats.dodge * 10;
+                        currDodge = dodgeCap;
                     }
                     break;
                 case CurrentValue.Energy:
@@ -473,6 +525,31 @@ public class ValueModifier
     public ValueModifier DeepCopy()
     {
         return new ValueModifier(value, amount);
+    }
+}
+
+public class TokenTuple
+{
+    public ActionCondition actionCondition;
+    public int amount;
+    public AbilityEffect effect;
+
+    public Character applicant;
+
+    public TokenTuple(ActionCondition ac, int amt, AbilityEffect ae, Character applier)
+    {
+        actionCondition = ac; amount = amt; effect = ae;
+        applicant = applier;
+    }
+
+    public void Execute(Character user, Character target)
+    {
+        List<AbilityAction> actions = new List<AbilityAction>();
+        effect.AddEffect(actions);
+        foreach (AbilityAction act in actions)
+        {
+            act.Execute(user, target, true);
+        }
     }
 }
 

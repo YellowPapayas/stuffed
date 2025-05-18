@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   valueMods:
   - value: 0
-    amount: 8
+    amount: 15

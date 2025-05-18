@@ -17,6 +17,8 @@ MonoBehaviour:
   targetType: 0
   energyCost: 1
   critCost: 2
+  cooldown: 0
+  usesPerTurn: 1
   critEffect: {fileID: 11400000, guid: 4ff59f62896c71d489d237c621dc6c50, type: 2}
   conditions: []
   accuracy: 80

@@ -17,6 +17,8 @@ MonoBehaviour:
   targetType: 1
   energyCost: 2
   critCost: 2
+  cooldown: 0
+  usesPerTurn: 1
   critEffect: {fileID: 11400000, guid: 0db2e89cde911bd49b3f91e1a0b8667e, type: 2}
   conditions: []
   buffs:
