@@ -9,7 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e062995d5e4a8344eb08fdeb4e711051, type: 3}
-  m_Name: AccuracyEffect
+  m_Script: {fileID: 11500000, guid: 31ed6103a7ef3d24eb0b36b901c62fd2, type: 3}
+  m_Name: HealingSplashAddEnergy
   m_EditorClassIdentifier: 
-  accMod: 25
+  valueMods:
+  - value: 1
+    amount: 1

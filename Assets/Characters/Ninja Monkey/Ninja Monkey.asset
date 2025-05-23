@@ -19,5 +19,5 @@ MonoBehaviour:
   maxEnergy: 3
   crit: 1
   armor: 0
-  dodge: 10
+  dodge: 8
   accuracy: 6

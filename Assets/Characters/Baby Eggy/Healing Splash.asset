@@ -19,8 +19,8 @@ MonoBehaviour:
   critCost: 3
   cooldown: 1
   usesPerTurn: 1
-  critEffect: {fileID: 11400000, guid: d9fef14c247479b4389f7d4f9cfd615e, type: 2}
+  critEffect: {fileID: 11400000, guid: 7d18305b39f6d2a46ba3a864c6406e80, type: 2}
   conditions:
-  - cond: {fileID: 11400000, guid: 0fd61bb2601b463468da7d5d1e076856, type: 2}
-    effect: {fileID: 11400000, guid: 0db2e89cde911bd49b3f91e1a0b8667e, type: 2}
+  - cond: {fileID: 11400000, guid: e2dfd2cf3f4f95f4bac3c5209cc61116, type: 2}
+    effect: {fileID: 11400000, guid: d9fef14c247479b4389f7d4f9cfd615e, type: 2}
   healRatio: 1.5

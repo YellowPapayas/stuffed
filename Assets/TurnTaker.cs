@@ -29,6 +29,9 @@ public class PlayerTurn : TurnTaker
 {
     public override void TakeTurn(Character character)
     {
+        DisplayManager dm = GameObject.Find("BattleManager").GetComponent<DisplayManager>();
+        dm.ShowPlayerUI();
+
         GameObject.Find("AbilityBar").GetComponent<AbilityBar>().DisplayAbilities(character);
         GameObject.Find("Energy Display").GetComponent<DescriptionText>().SetDescription(character.energy + " / " + character.stats.maxEnergy);
         GameObject.Find("Crit Display").GetComponent<DescriptionText>().SetDescription(character.currCrit + "");
@@ -106,7 +109,6 @@ public class EnemyTurn : TurnTaker
             yield return new WaitForSeconds(0.8f);
         }
         yield return new WaitForSeconds(0.5f);
-        dm.ShowPlayerUI();
         bm.NextTurn();
     }
 

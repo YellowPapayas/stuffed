@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: ChillToken
   m_EditorClassIdentifier: 
   tokenName: Chill
+  image: {fileID: 2373615232603632971, guid: edd29a08239c3504c9e8964ca7b51c2b, type: 3}
   actionCondition: 5
   conditionAmount: 1
   effect: {fileID: 11400000, guid: e14cd56e544a10f4e9125e2ca1666a24, type: 2}
+  affectActivator: 0

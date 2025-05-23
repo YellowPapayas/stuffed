@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: Scare
   maxHealth: 100
-  attack: 9
+  attack: 10
   initiative: 3
   maxEnergy: 2
   crit: 1

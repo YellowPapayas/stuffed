@@ -9,17 +9,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4dbea9a24ebc2644b24310d57be76e5, type: 3}
-  m_Name: Strike
+  m_Script: {fileID: 11500000, guid: 9d0828511b577e5449c0055e73d4dffb, type: 3}
+  m_Name: Darkness
   m_EditorClassIdentifier: 
-  abilityName: Precise Strike
+  abilityName: Darkness
   abilityImage: {fileID: 0}
-  targetType: 0
+  targetType: 1
   energyCost: 1
   critCost: 2
   cooldown: 0
   usesPerTurn: 0
-  critEffect: {fileID: 11400000, guid: 0fa17b46aa58a4b488383ea7174cadc1, type: 2}
+  critEffect: {fileID: 11400000, guid: 57ee794ab669be2488eeff81cb5d9a9e, type: 2}
   conditions: []
-  accuracy: 100
-  attackRatio: 1
+  effects:
+  - {fileID: 11400000, guid: 011acd22d1b951744b1a2cdc017785fd, type: 2}

@@ -9,7 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e062995d5e4a8344eb08fdeb4e711051, type: 3}
-  m_Name: AccuracyEffect
+  m_Script: {fileID: 11500000, guid: 6925a776828e7374e9ef5c65dc1ac0b6, type: 3}
+  m_Name: WaterShieldDebuff
   m_EditorClassIdentifier: 
-  accMod: 25
+  debuffs:
+  - type: 0
+    amount: -3
+    rounds: 2
+    removeThisRound: 0

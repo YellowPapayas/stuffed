@@ -9,7 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e062995d5e4a8344eb08fdeb4e711051, type: 3}
-  m_Name: AccuracyEffect
+  m_Script: {fileID: 11500000, guid: 28e5c6edbb49cb646aa36a11132b5ce7, type: 3}
+  m_Name: DarknessBuff
   m_EditorClassIdentifier: 
-  accMod: 25
+  buffs:
+  - type: 0
+    amount: 3
+    rounds: 1
+    removeThisRound: 0
+  - type: 3
+    amount: 15
+    rounds: 1
+    removeThisRound: 0

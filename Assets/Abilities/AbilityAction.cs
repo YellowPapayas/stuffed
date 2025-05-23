@@ -23,7 +23,7 @@ public class DamageAction : AbilityAction
     {
         if (doesHit)
         {
-            target.OnHit(Mathf.FloorToInt(user.GetStat(StatType.Attack) * attackRatio));
+            target.OnHit(Mathf.FloorToInt(user.GetStat(StatType.Attack) * attackRatio), user);
         }
     }
 
@@ -427,20 +427,29 @@ public class ActivateTokenAction : AbilityAction
     {
         if (doesHit)
         {
-            target.OnActivateToken();
+            target.OnActivateToken(user);
         }
     }
 
     public override string GetActionText(Character user, Character target, bool doesHit)
     {
         string output = "";
-        foreach (TokenTuple token in target.tokens)
+        for (int i = 0; i < target.tokens.Count; i++)
         {
-            List<AbilityAction> tokenActions = new List<AbilityAction>();
-            token.effect.AddEffect(tokenActions);
-            foreach (AbilityAction action in tokenActions)
+            TokenTuple token = target.tokens[i];
+            if (token.actionCondition == ActionCondition.OnActivateToken && token.applicant == user)
             {
-                output += action.GetActionText(user, target, doesHit);
+                List<AbilityAction> tokenActions = new List<AbilityAction>();
+                token.effect.AddEffect(tokenActions);
+                for (int j = 0; j < tokenActions.Count; j++)
+                {
+                    AbilityAction action = tokenActions[j];
+                    output += action.GetActionText(user, target, doesHit);
+                    if (i < target.tokens.Count - 1 || j < tokenActions.Count - 1)
+                    {
+                        output += "\n";
+                    }
+                }
             }
         }
         return output;
@@ -451,11 +460,14 @@ public class ActivateTokenAction : AbilityAction
         float output = 0f;
         foreach (TokenTuple token in target.tokens)
         {
-            List<AbilityAction> tokenActions = new List<AbilityAction>();
-            token.effect.AddEffect(tokenActions);
-            foreach (AbilityAction action in tokenActions)
+            if (token.actionCondition == ActionCondition.OnActivateToken && token.applicant == user)
             {
-                output += action.GetActionValue(user, target, doesHit, mults);
+                List<AbilityAction> tokenActions = new List<AbilityAction>();
+                token.effect.AddEffect(tokenActions);
+                foreach (AbilityAction action in tokenActions)
+                {
+                    output += action.GetActionValue(user, target, doesHit, mults);
+                }
             }
         }
         return output;

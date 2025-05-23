@@ -9,8 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d78c68cf6b430cb4c847a1ad07b039dd, type: 3}
-  m_Name: Debuff Increase
+  m_Script: {fileID: 11500000, guid: 6925a776828e7374e9ef5c65dc1ac0b6, type: 3}
+  m_Name: PhobiaDebuff
   m_EditorClassIdentifier: 
-  critCost: 3
-  amount: -3
+  debuffs:
+  - type: 1
+    amount: -10
+    rounds: 1
+    removeThisRound: 0

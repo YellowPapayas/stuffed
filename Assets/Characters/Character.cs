@@ -98,7 +98,7 @@ public class Character : MonoBehaviour, IClickable
 
     public void AddToken(TokenObject tokenObject, Character applier)
     {
-        TokenTuple tokenTuple = new TokenTuple(tokenObject.actionCondition, tokenObject.conditionAmount, tokenObject.effect, applier);
+        TokenTuple tokenTuple = new TokenTuple(tokenObject.actionCondition, tokenObject.conditionAmount, tokenObject.effect, applier, tokenObject.affectActivator);
         tokens.Add(tokenTuple);
 
         tokenBar.AddToken(tokenObject);
@@ -246,6 +246,16 @@ public class Character : MonoBehaviour, IClickable
             }
         }
 
+        for (int j = tokens.Count - 1; j >= 0; j--)
+        {
+            TokenTuple t = tokens[j];
+            t.remainingRounds--;
+            if(t.remainingRounds <= 0)
+            {
+                RemoveToken(j);
+            }
+        }
+
         foreach(Ability ab in abilities)
         {
             ab.ShouldCooldown();
@@ -283,18 +293,33 @@ public class Character : MonoBehaviour, IClickable
         justDodged = false;
     }
 
-    public void OnHit(int damage)
+    public void OnHit(int damage, Character attacker)
     {
         int armorDmg = calcArmorDamage(damage);
         Damage(armorDmg);
+
+        UpdateTokens(ActionCondition.OnHit, attacker);
     }
 
-    public void OnActivateToken()
+    public void OnActivateToken(Character activator)
     {
-        UpdateTokens(ActionCondition.OnActivateToken);
+        for (int i = 0; i < tokens.Count; i++)
+        {
+            TokenTuple tuple = tokens[i];
+            if (tuple.actionCondition == ActionCondition.OnActivateToken && tuple.applicant == activator)
+            {
+                tuple.amount -= 1;
+                if (tuple.amount <= 0)
+                {
+                    tuple.Execute(tuple.applicant, this, activator);
+                    RemoveToken(i);
+                    i--;
+                }
+            }
+        }
     }
 
-    void UpdateTokens(ActionCondition actCond)
+    void UpdateTokens(ActionCondition actCond, Character activator)
     {
         for(int i = 0; i < tokens.Count; i++)
         {
@@ -304,7 +329,7 @@ public class Character : MonoBehaviour, IClickable
                 tuple.amount -= 1;
                 if(tuple.amount <= 0)
                 {
-                    tuple.Execute(tuple.applicant, this);
+                    tuple.Execute(tuple.applicant, this, activator);
                     RemoveToken(i);
                     i--;
                 }
@@ -403,6 +428,17 @@ public class Character : MonoBehaviour, IClickable
         bm.OnCharacterDeath(this);
 
         Destroy(this.gameObject);
+    }
+
+    public void OnOtherCharacterDeath(Character other)
+    {
+        for (int i = tokens.Count - 1; i >= 0; i--)
+        {
+            if (tokens[i].applicant == other)
+            {
+                RemoveToken(i);
+            }
+        }
     }
 
     void Damage(int damage)
@@ -535,20 +571,29 @@ public class TokenTuple
     public AbilityEffect effect;
 
     public Character applicant;
+    public bool affectActivator;
+    public int remainingRounds = 2;
 
-    public TokenTuple(ActionCondition ac, int amt, AbilityEffect ae, Character applier)
+    public TokenTuple(ActionCondition ac, int amt, AbilityEffect ae, Character applier, bool aa)
     {
         actionCondition = ac; amount = amt; effect = ae;
-        applicant = applier;
+        applicant = applier; affectActivator = aa;
     }
 
-    public void Execute(Character user, Character target)
+    public void Execute(Character user, Character target, Character activator)
     {
         List<AbilityAction> actions = new List<AbilityAction>();
         effect.AddEffect(actions);
         foreach (AbilityAction act in actions)
         {
-            act.Execute(user, target, true);
+            if (affectActivator)
+            {
+                act.Execute(user, activator, true);
+            }
+            else
+            {
+                act.Execute(user, target, true);
+            }
         }
     }
 }

@@ -14,7 +14,7 @@ public class DebuffEffect : AbilityEffect
             if (act is DebuffAction db)
             {
                 db.statMods.AddRange(debuffs);
-                break;
+                return;
             }
         }
         actions.Add(new DebuffAction(debuffs));

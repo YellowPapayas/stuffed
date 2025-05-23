@@ -72,6 +72,11 @@ public class BattleManager : MonoBehaviour
     {
         GetTeam(ch.teamSide).Remove(ch);
         characters.Remove(ch);
+
+        foreach(Character character in characters)
+        {
+            character.OnOtherCharacterDeath(ch);
+        }
     }
 
     public List<Character> GetTeam(bool teamSide)

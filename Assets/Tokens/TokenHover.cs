@@ -24,6 +24,12 @@ public class TokenHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     }
 
+    public void SetImage(Sprite sprite)
+    {
+        Image img = gameObject.GetComponent<Image>();
+        img.sprite = sprite;
+    }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
         hoverText.text = description;

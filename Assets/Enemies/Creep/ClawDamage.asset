@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59347f459772a5147b7c2e13290b1620, type: 3}
   m_Name: ClawDamage
   m_EditorClassIdentifier: 
-  attackRatio: 1
+  attackRatio: 1.1

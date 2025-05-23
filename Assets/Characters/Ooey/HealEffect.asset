@@ -12,5 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc01013cf7505d24bb130702bcaafde2, type: 3}
   m_Name: HealEffect
   m_EditorClassIdentifier: 
-  critCost: 2
-  percentage: 1.2
+  percentage: 1

@@ -1,17 +1,22 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 [CreateAssetMenu(fileName = "NewToken", menuName = "Scriptable Objects/Token")]
 public class TokenObject : ScriptableObject
 {
     public string tokenName;
+    public Sprite image;
 
     public ActionCondition actionCondition;
     public int conditionAmount;
     public AbilityEffect effect;
 
+    public bool affectActivator;
+
     public void SetupIcon(TokenHover icon)
     {
-        icon.description = $"<b><u>{tokenName}</u></b>\n" + ConditionString() + $" {conditionAmount} time(s):\n" + effect.AddDescription();
+        icon.description = $"<b><u>{tokenName}</u></b>\n" + ConditionString() + $" {conditionAmount} time(s):\n" + effect.AddDescription() + (affectActivator ? " to activator" : " to target");
+        icon.SetImage(image);
     }
 
     string ConditionString()

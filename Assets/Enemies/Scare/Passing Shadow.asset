@@ -17,15 +17,17 @@ MonoBehaviour:
   targetType: 4
   energyCost: 2
   critCost: 3
-  critEffect: {fileID: 11400000, guid: b4e8a58505afad046826ea1e8d2cc5a3, type: 2}
+  cooldown: 1
+  usesPerTurn: 0
+  critEffect: {fileID: 11400000, guid: 36710b4ffb6a3fa41b77a540b8318983, type: 2}
   conditions: []
+  accuracy: 65
   debuffs:
   - type: 0
     amount: -1
     rounds: 2
     removeThisRound: 0
   - type: 3
-    amount: -5
+    amount: -12
     rounds: 2
     removeThisRound: 0
-  accuracy: 65

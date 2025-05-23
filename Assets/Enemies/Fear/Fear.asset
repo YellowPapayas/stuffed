@@ -9,7 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e062995d5e4a8344eb08fdeb4e711051, type: 3}
-  m_Name: AccuracyEffect
+  m_Script: {fileID: 11500000, guid: 74d9b5b82b87bf343ba158f6c1cd37ee, type: 3}
+  m_Name: Fear
   m_EditorClassIdentifier: 
-  accMod: 25
+  characterName: Fear
+  maxHealth: 100
+  attack: 9
+  initiative: 1
+  maxEnergy: 2
+  crit: 1
+  armor: 0
+  dodge: 7
+  accuracy: 6

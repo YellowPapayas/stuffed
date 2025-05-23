@@ -9,17 +9,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4dbea9a24ebc2644b24310d57be76e5, type: 3}
-  m_Name: Strike
+  m_Script: {fileID: 11500000, guid: f56815b43c76d18419212b6d9f38031e, type: 3}
+  m_Name: Phobia
   m_EditorClassIdentifier: 
-  abilityName: Precise Strike
+  abilityName: Phobia
   abilityImage: {fileID: 0}
   targetType: 0
   energyCost: 1
   critCost: 2
   cooldown: 0
   usesPerTurn: 0
-  critEffect: {fileID: 11400000, guid: 0fa17b46aa58a4b488383ea7174cadc1, type: 2}
+  critEffect: {fileID: 11400000, guid: a8b366951ef85f1419dc38a99a2872d7, type: 2}
   conditions: []
-  accuracy: 100
-  attackRatio: 1
+  accuracy: 70
+  effects:
+  - {fileID: 11400000, guid: 71e69a576e09e804b8cb28017a85edd6, type: 2}
+  - {fileID: 11400000, guid: 0ea233f1e77c3634999a78ba33f0d15e, type: 2}

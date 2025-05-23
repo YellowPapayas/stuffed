@@ -16,10 +16,10 @@ MonoBehaviour:
   abilityImage: {fileID: 0}
   targetType: 0
   energyCost: 2
-  critCost: 2
+  critCost: 3
   cooldown: 0
   usesPerTurn: 0
-  critEffect: {fileID: 11400000, guid: 1675017befe995446817a12eee58ba76, type: 2}
+  critEffect: {fileID: 11400000, guid: 0a706a0a853756344ba26eacf91aea56, type: 2}
   conditions: []
   accuracy: 80
   effects:
