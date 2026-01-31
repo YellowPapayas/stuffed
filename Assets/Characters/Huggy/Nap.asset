@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f56815b43c76d18419212b6d9f38031e, type: 3}
+  m_Name: Nap
+  m_EditorClassIdentifier: 
+  abilityName: Nap
+  abilityImage: {fileID: 0}
+  targetType: 0
+  energyCost: 2
+  critCost: 2
+  cooldown: 0
+  usesPerTurn: 1
+  critEffect: {fileID: 11400000, guid: 3d304172b9cc8f0439dac99d40df81cd, type: 2}
+  conditions:
+  - cond: {fileID: 11400000, guid: 2eb02a40b328d064fa40f3591bc71dca, type: 2}
+    effect: {fileID: 11400000, guid: 30c265732b691df45bcf1f353d11cc39, type: 2}
+  accuracy: 70
+  effects:
+  - {fileID: 11400000, guid: b6040a31d0de16a46a81b7c41e34ee01, type: 2}

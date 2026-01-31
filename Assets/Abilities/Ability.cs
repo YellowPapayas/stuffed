@@ -26,13 +26,30 @@ public abstract class Ability : ScriptableObject
 
     public abstract void AddActions();
 
-    public virtual void Activate(Character user, Character target, bool isCrit)
+    public virtual void Activate(Character user, List<Character> targets, bool isCrit)
     {
-        SetupActions(user, target, isCrit);
-
-        foreach (AbilityAction act in actions)
+        bool selfTargetted = false;
+        foreach (Character target in targets)
         {
-            act.Execute(user, target, DoesHit(user, target, isCrit));
+            SetupActions(user, target, isCrit);
+
+            for (int i = 0; i < actions.Count; i++)
+            {
+                AbilityAction act = actions[i];
+                if (act.targetSelf)
+                {
+                    if (!selfTargetted)
+                    {
+                        act.Execute(user, user, true);
+                    }
+                }
+                else
+                {
+                    act.Execute(user, target, DoesHit(user, target, isCrit));
+                }
+            }
+
+            selfTargetted = true;
         }
 
         putOnCooldown = true;
@@ -49,7 +66,7 @@ public abstract class Ability : ScriptableObject
         AddActions();
 
         foreach(ConditionalTuple ct in conditions) {
-            if(ct.cond.CheckCondition(user, target))
+            if(ct.cond.CheckCondition(this, user, target, isCrit))
             {
                 ct.effect.AddEffect(actions);
             }
@@ -100,7 +117,7 @@ public abstract class Ability : ScriptableObject
 
         foreach (ConditionalTuple ct in conditions)
         {
-            if (ct.cond.CheckCondition(user, target))
+            if (ct.cond.CheckCondition(this, user, target, isCrit))
             {
                 ct.effect.AddEffect(actions);
             }
@@ -111,36 +128,50 @@ public abstract class Ability : ScriptableObject
             critEffect.AddEffect(actions);
         }
 
+        string selfText = "";
         string actText = "";
-        if (!DoesHit(user, target, isCrit))
+        for (int i = 0; i < actions.Count; i++)
         {
-            actText += "<color=green>DODGED</color>\n";
-        }
-        else
-        {
-            for (int i = 0; i < actions.Count; i++)
+            AbilityAction act = actions[i];
+            if (act.targetSelf)
             {
-                AbilityAction act = actions[i];
-                actText += act.GetActionText(user, target, DoesHit(user, target, isCrit));
-                if (i < actions.Count - 1)
+                if (selfText.Length > 0)
+                {
+                    selfText += "\n";
+                }
+                selfText += act.GetActionText(user, user, true);
+            }
+            else
+            {
+                if (actText.Length > 0)
                 {
                     actText += "\n";
                 }
+                actText += act.GetActionText(user, target, DoesHit(user, target, isCrit));
             }
         }
-
-        target.DisplayActionPerm(actText);
+        if (!DoesHit(user, target, isCrit))
+        {
+            actText = "<color=green>DODGED</color>\n";
+        }
+        user.gameObject.GetComponent<CharacterUI>().DisplayActionPerm(selfText);
+        target.gameObject.GetComponent<CharacterUI>().DisplayActionPerm(actText);
     }
 
     public virtual (float, float) CalcActionValue(Character user, Character target, ActionValues mults)
     {
         AddActions();
+        List<AbilityAction> condCritActions = new List<AbilityAction>();
 
         foreach (ConditionalTuple ct in conditions)
         {
-            if (ct.cond.CheckCondition(user, target))
+            if (ct.cond.CheckCondition(this, user, target, false))
             {
                 ct.effect.AddEffect(actions);
+            }
+            else if (ct.cond.CheckCondition(this, user, target, true))
+            {
+                ct.effect.AddEffect(condCritActions);
             }
         }
 
@@ -154,6 +185,10 @@ public abstract class Ability : ScriptableObject
 
         float critTotal = 0f;
         foreach (AbilityAction act in actions)
+        {
+            critTotal += act.GetActionValue(user, target, DoesHit(user, target, true), mults);
+        }
+        foreach(AbilityAction act in condCritActions)
         {
             critTotal += act.GetActionValue(user, target, DoesHit(user, target, true), mults);
         }

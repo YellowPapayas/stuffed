@@ -6,15 +6,15 @@ public class BattleManager : MonoBehaviour
 {
     Character pendingChar;
     public Ability pendingAbility;
-    DescriptionText abilityDescription;
-    DescriptionText energyDisplay;
-    DescriptionText critDisplay;
-    TurnOrderDisplay turnOrderDisplay;
 
-    ClickHandle click;
-    LineManager lm;
-    DisplayManager dm;
-    TemporaryText warning;
+    [SerializeField] ClickHandle click;
+    [SerializeField] LineManager lm;
+    [SerializeField] DisplayManager dm;
+    [SerializeField] DescriptionText abilityDescription;
+    [SerializeField] TemporaryText warning;
+    [SerializeField] TurnOrderDisplay turnOrderDisplay;
+
+    TurnManager turnManager;
 
     List<Character> characters;
     List<Character> leftSide;
@@ -29,25 +29,16 @@ public class BattleManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        click = GameObject.Find("ClickHandler").GetComponent<ClickHandle>();
-        lm = GetComponent<LineManager>();
-        dm = GetComponent<DisplayManager>();
-        warning = GameObject.Find("Warning Text").GetComponent<TemporaryText>();
-        abilityDescription = GameObject.Find("Description").GetComponent<DescriptionText>();
         abilityDescription.Setup();
-        energyDisplay = GameObject.Find("Energy Display").GetComponent<DescriptionText>();
-        energyDisplay.Setup();
-        critDisplay = GameObject.Find("Crit Display").GetComponent<DescriptionText>();
-        critDisplay.Setup();
-        turnOrderDisplay = GameObject.Find("Turn Order").GetComponent<TurnOrderDisplay>();
+        dm.Setup();
 
         characters = new List<Character>();
-        leftSide = new List<Character>();
-        rightSide = new List<Character>();
+        leftSide = characters.FindAll(c => c.teamSide);
+        rightSide = characters.FindAll(c => !c.teamSide);
         AddCharacters();
 
-        turnQueue = new Queue<Character>();
-        NextRound();
+        turnManager = new TurnManager(characters, turnOrderDisplay, this);
+        turnManager.NextTurn();
     }
 
     void AddCharacters()
@@ -63,19 +54,6 @@ public class BattleManager : MonoBehaviour
             {
                 rightSide.Add(c);
             }
-        }
-
-        turnOrderDisplay.Setup(characters);
-    }
-
-    public void OnCharacterDeath(Character ch)
-    {
-        GetTeam(ch.teamSide).Remove(ch);
-        characters.Remove(ch);
-
-        foreach(Character character in characters)
-        {
-            character.OnOtherCharacterDeath(ch);
         }
     }
 
@@ -102,64 +80,18 @@ public class BattleManager : MonoBehaviour
     {
         foreach (Character c in toClear)
         {
-            c.ActionOff();
+            c.gameObject.GetComponent<CharacterUI>().ActionOff();
         }
     }
 
-    void QueueTurns()
+    public void SetPendingChar(Character ch)
     {
-        List<Character> toAdd = new List<Character>();
-        toAdd.AddRange(characters);
-        for (int i = 0; i < characters.Count; i++)
-        {
-            Character highest = null;
-            foreach (Character ch in toAdd)
-            {
-                if (highest == null || ch.stats.initiative > highest.stats.initiative)
-                {
-                    highest = ch;
-                }
-            }
-            turnQueue.Enqueue(highest);
-            toAdd.Remove(highest);
-        }
-
-        turnOrderDisplay.AddAllIcons(turnQueue);
-    }
-
-    void NextRound()
-    {
-        QueueTurns();
-        NextTurn();
+        pendingChar = ch;
     }
 
     public void NextTurn()
     {
-        if (pendingChar != null)
-        {
-            pendingChar.OnTurnEnd();
-            foreach (Character ch in characters)
-            {
-                ch.OnGeneralTurnEnd();
-            }
-            pendingChar = null;
-
-            turnOrderDisplay.RemoveTopTurn();
-        }
-        if (turnQueue.Count > 0)
-        {
-            pendingChar = turnQueue.Dequeue();
-            if (pendingChar == null)
-            {
-                turnOrderDisplay.RemoveTopTurn();
-                NextTurn();
-            }
-            pendingChar.OnTurnStart();
-        }
-        else
-        {
-            NextRound();
-        }
+        turnManager.NextTurn();
     }
 
     public void StartTargeting(Ability ability)
@@ -189,47 +121,47 @@ public class BattleManager : MonoBehaviour
 
     public IEnumerator SelectTarget(Character target)
     {
-        if (CheckTarget(target))
+        // Guard 1: wrong team / line
+        if (!CheckTarget(target))
+            yield break;                                 // nothing to do; silently ignore
+
+        // Guard 2: not enough energy
+        if (pendingChar.energy < pendingAbility.energyCost)
         {
-            if (pendingChar.energy >= pendingAbility.energyCost)
-            {
-                if (!pendingCrit || pendingChar.currCrit >= pendingAbility.critCost)
-                {
-                    ClearActionText(characters);
-                    List<Character> targets = GetTargets(target);
-                    pendingChar.energy -= pendingAbility.energyCost;
-                    energyDisplay.SetDescription(pendingChar.energy + " / " + pendingChar.stats.maxEnergy);
-                    if (pendingCrit)
-                    {
-                        pendingChar.currCrit -= pendingAbility.critCost;
-                        critDisplay.SetDescription(pendingChar.currCrit + "");
-                    }
-                    click.paused = true;
-                    Ability saveAbility = pendingAbility;
-                    StopTargeting();
-                    yield return StartCoroutine(dm.ShowAbilityUse(pendingChar, saveAbility, targets));
-                    yield return new WaitForSeconds(0.1f);
-                    dm.SetActionDuration(targets, 800);
-                    foreach (Character ch in targets)
-                    {
-                        saveAbility.Activate(pendingChar, ch, pendingCrit);
-                    }
-                    GameObject.Find("AbilityBar").GetComponent<AbilityBar>().UpdateView();
-                    click.paused = false;
-                } else
-                {
-                    warning.DisplayText("<color=#AA0000>Not enough crit!</color>", 300);
-                    ClearActionText(characters);
-                }
-            } else
-            {
-                warning.DisplayText("<color=#AA0000>Not enough energy!</color>", 300);
-                ClearActionText(characters);
-            }
-        } else
-        {
-            ClearActionText(characters);
+            SelectFail("Not enough energy!");
+            yield break;
         }
+
+        // Guard 3: not enough crit (only when spending crit)
+        if (pendingCrit && pendingChar.currCrit < pendingAbility.critCost)
+        {
+            SelectFail("Not enough crit!");
+            yield break;
+        }
+
+        ClearActionText(characters);
+        List<Character> targets = GetTargets(target);
+        pendingChar.energy -= pendingAbility.energyCost;
+        if (pendingCrit)
+        {
+            pendingChar.currCrit -= pendingAbility.critCost;
+        }
+        dm.UpdatePlayerUI(pendingChar);
+        click.paused = true;
+        Ability saveAbility = pendingAbility;
+        StopTargeting();
+        yield return StartCoroutine(dm.ShowAbilityUse(pendingChar, saveAbility, targets));
+        yield return new WaitForSeconds(0.1f);
+        dm.SetActionDuration(800);
+        saveAbility.Activate(pendingChar, targets, pendingCrit);
+        GameObject.Find("AbilityBar").GetComponent<AbilityBar>().UpdateView();
+        click.paused = false;
+    }
+
+    void SelectFail(string message)
+    {
+        warning.DisplayText($"<color=#AA0000>{message}</color>", 750);
+        ClearActionText(characters);
         StopTargeting();
     }
 
@@ -242,11 +174,21 @@ public class BattleManager : MonoBehaviour
         click.selected = false;
     }
 
+    void OnCharacterDeath(Character ch)
+    {
+        characters.Remove(ch);
+        leftSide.Remove(ch);
+        rightSide.Remove(ch);
+
+        turnManager.OnCharacterDeath(ch);
+    }
+
     public List<Character> PreviewAbility(Character ch)
     {
         if(pendingChar != null && pendingAbility != null && CheckTarget(ch))
         {
-            List<Character> affected = GetTargets(ch);
+            List<Character> affected = new List<Character>();
+            affected.AddRange(GetTargets(ch));
             return dm.PreviewAbility(pendingChar, pendingAbility, affected, pendingCrit);
         }
         return null;
@@ -305,9 +247,13 @@ public class BattleManager : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    void OnEnable()
     {
-        
+        Character.CharacterDied += OnCharacterDeath;
+    }
+
+    void OnDisable()
+    {
+        Character.CharacterDied -= OnCharacterDeath;
     }
 }

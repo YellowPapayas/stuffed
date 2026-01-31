@@ -5,7 +5,7 @@ public class StatModConditional : Conditional
 {
     public bool checkDebuff = true;
 
-    public override bool CheckCondition(Character user, Character target)
+    public override bool CheckCondition(Ability ability, Character user, Character target, bool doesHit)
     {
         Character toCheck = checkUser ? user : target;
         foreach (StatModifier sm in toCheck.statMods)

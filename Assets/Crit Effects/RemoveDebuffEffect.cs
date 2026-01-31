@@ -6,7 +6,9 @@ public class RemoveDebuffEffect : AbilityEffect
 {
     public override void AddEffect(List<AbilityAction> actions)
     {
-        actions.Add(new RemoveDebuffAction());
+        RemoveDebuffAction rmdbAct = new RemoveDebuffAction();
+        rmdbAct.targetSelf = this.targetSelf;
+        actions.Add(rmdbAct);
     }
 
     public override string AddDescription()

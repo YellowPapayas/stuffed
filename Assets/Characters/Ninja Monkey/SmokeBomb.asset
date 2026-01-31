@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityName: Smoke Bomb
   abilityImage: {fileID: 0}
-  targetType: 2
+  targetType: 4
   energyCost: 3
   critCost: 2
   cooldown: 2

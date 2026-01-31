@@ -17,11 +17,13 @@ public class HealEffect : AbilityEffect
                 return;
             }
         }
-        actions.Add(new HealAction(percentage));
+        HealAction healAct = new HealAction(percentage);
+        healAct.targetSelf = this.targetSelf;
+        actions.Add(healAct);
     }
 
     public override string AddDescription()
     {
-        return $"Heal the target for +{(int) (percentage*100)}% ATK";
+        return $"Heal " + (targetSelf ? "self" : "the target") + $" for +{(int) (percentage*100)}% ATK";
     }
 }

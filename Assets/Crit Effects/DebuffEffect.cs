@@ -17,7 +17,9 @@ public class DebuffEffect : AbilityEffect
                 return;
             }
         }
-        actions.Add(new DebuffAction(debuffs));
+        DebuffAction debuffAct = new DebuffAction(debuffs);
+        debuffAct.targetSelf = this.targetSelf;
+        actions.Add(debuffAct);
     }
 
     public override string AddDescription()

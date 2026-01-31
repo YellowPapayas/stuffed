@@ -6,7 +6,7 @@ public class TurnOrderDisplay : MonoBehaviour
 {
     public GameObject turnIcon;
     Dictionary<int, GameObject> icons = new Dictionary<int, GameObject>();
-    Queue<GameObject> iconOrder = new Queue<GameObject>();
+    LinkedList<GameObject> iconOrder = new LinkedList<GameObject>();
 
     public void Setup(List<Character> list)
     {
@@ -20,7 +20,7 @@ public class TurnOrderDisplay : MonoBehaviour
         }
     }
 
-    public void AddAllIcons(Queue<Character> order)
+    public void AddAllIcons(LinkedList<Character> order)
     {
         foreach (Character ch in order)
         {
@@ -29,7 +29,7 @@ public class TurnOrderDisplay : MonoBehaviour
             ic.transform.SetParent(transform);
             ic.SetActive(true);
 
-            iconOrder.Enqueue(ic);
+            iconOrder.AddLast(ic);
         }
     }
 
@@ -37,15 +37,24 @@ public class TurnOrderDisplay : MonoBehaviour
     {
         if (iconOrder.Count > 0)
         {
-            GameObject ic = iconOrder.Dequeue();
+            GameObject ic = iconOrder.First.Value;
+            iconOrder.RemoveFirst();
             ic.transform.SetParent(transform.parent);
             ic.SetActive(false);
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void RemoveIcon(Character ch)
     {
-        
+        GameObject ic;
+        icons.TryGetValue(ch.gameObject.GetInstanceID(), out ic);
+
+        var toRemove = iconOrder.Find(ic);
+        if(toRemove != null)
+        {
+            iconOrder.Remove(toRemove);
+            icons.Remove(ch.gameObject.GetInstanceID());
+            Destroy(ic);
+        }
     }
 }

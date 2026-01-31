@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 public abstract class AbilityAction
 {
+    public bool targetSelf;
+
     public abstract void Execute(Character user, Character target, bool doesHit);
 
     public abstract string GetActionText(Character user, Character target, bool doesHit);

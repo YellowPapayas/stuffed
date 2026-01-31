@@ -8,7 +8,9 @@ public class AddTokenEffect : AbilityEffect
 
     public override void AddEffect(List<AbilityAction> actions)
     {
-        actions.Add(new AddTokenAction(tokenList));
+        AddTokenAction act = new AddTokenAction(tokenList);
+        act.targetSelf = this.targetSelf;
+        actions.Add(act);
     }
 
     public override string AddDescription()

@@ -14,10 +14,12 @@ public class DamageEffect : AbilityEffect
             if (act is DamageAction dmg)
             {
                 dmg.attackRatio += attackRatio;
-                break;
+                return;
             }
         }
-        actions.Add(new DamageAction(attackRatio));
+        DamageAction dmgAct = new DamageAction(attackRatio);
+        dmgAct.targetSelf = this.targetSelf;
+        actions.Add(dmgAct);
     }
 
     public override string AddDescription()

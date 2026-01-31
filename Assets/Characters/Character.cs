@@ -1,21 +1,18 @@
 using UnityEngine;
-using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
 
 public class Character : MonoBehaviour, IClickable
 {
-    Healthbar bar;
-    GameObject highlight;
-    GameObject target;
+    public static event System.Action<Character> CharacterDied;
+
+    CharacterUI ui;
+    [SerializeField] GameObject target;
     TemporaryText actionText;
-    StatusBar statusBar;
     TokenBar tokenBar;
 
-    Color highlightColor = new Color(228 / 255f, 1f, 0f, 120 / 255f);
-    Color turnColor = new Color(120 / 255f, 180 / 255f, 120 / 255f, 90 / 255f);
-
     BattleManager bm;
+    DisplayManager dm;
 
     public CharacterStats stats;
     public List<Ability> abilities;
@@ -34,6 +31,8 @@ public class Character : MonoBehaviour, IClickable
     public List<PassiveModifier> passiveMods;
     public List<TokenTuple> tokens;
 
+    public int addEnergy = 0;
+
     BoxCollider2D coll;
     List<Character> affectedText;
 
@@ -43,17 +42,13 @@ public class Character : MonoBehaviour, IClickable
         health = stats.maxHealth;
         energy = stats.maxEnergy;
         coll = GetComponent<BoxCollider2D>();
-        
-        bar = transform.Find("Canvas").Find("Backbar").Find("Healthbar").gameObject.GetComponent<Healthbar>();
-        highlight = transform.Find("Canvas").Find("Highlight").gameObject;
-        highlight.SetActive(false);
-        target = transform.Find("Canvas").Find("Target").gameObject;
-        target.SetActive(false);
-        statusBar = transform.Find("Overlay").Find("Status Bar").gameObject.GetComponent<StatusBar>();
+
+        ui = GetComponent<CharacterUI>();
         tokenBar = transform.Find("Overlay").Find("Token Bar").gameObject.GetComponent<TokenBar>();
         actionText = transform.Find("Overlay").Find("Action Text").gameObject.GetComponent<TemporaryText>();
 
         bm = GameObject.Find("BattleManager").GetComponent<BattleManager>();
+        dm = GameObject.Find("BattleManager").GetComponent<DisplayManager>();
 
         if (playerControlled)
         {
@@ -76,24 +71,7 @@ public class Character : MonoBehaviour, IClickable
 
     public void SetHighlight(bool show)
     {
-        Image light = highlight.GetComponent<Image>();
-        if (isTurn)
-        {
-            highlight.SetActive(true);
-            if (show)
-            {
-                light.color = highlightColor;
-            }
-            else
-            {
-                light.color = turnColor;
-            }
-        }
-        else
-        {
-            light.color = highlightColor;
-            highlight.SetActive(show);
-        }
+        ui.SetHighlight(isTurn, show);
     }
 
     public void AddToken(TokenObject tokenObject, Character applier)
@@ -107,7 +85,7 @@ public class Character : MonoBehaviour, IClickable
     public void AddStatus(StatModifier statMod)
     {
         statMods.Add(statMod);
-        statusBar.UpdateView();
+        ui.UpdateStatuses();
     }
 
     public void OnDebuffsHit(List<StatModifier> debuffs)
@@ -143,8 +121,21 @@ public class Character : MonoBehaviour, IClickable
     public void RemoveStatusIndex(int index)
     {
         statMods.RemoveAt(index);
-        statusBar.UpdateView();
+        ui.UpdateStatuses();
     }
+
+    private string FormatColoredStat(int value, string positiveColor, string negativeColor)
+    {
+        if (value > 0)
+            return $" <color={positiveColor}>(+{value})</color>";
+        else if (value < 0)
+            return $" <color={negativeColor}>({value})</color>";
+        return "";
+    }
+
+    public string GetStatString(StatType st) => FormatColoredStat(GetStat(st), "green", "red");
+    public string GetModString(StatType st) => FormatColoredStat(GetModAmount(st), "green", "red");
+    public string GetPassiveString(StatType st) => FormatColoredStat(passiveMods.Where(m => m.type == st).Sum(m => m.amount), "#CCFF00", "#FFCC00");
 
     public int GetStat(StatType st)
     {
@@ -158,61 +149,10 @@ public class Character : MonoBehaviour, IClickable
         return baseVal + mod + passMod;
     }
 
-    public string GetStatString(StatType st)
-    {
-        int statamount = GetStat(st);
-        if (statamount > 0)
-        {
-            return $" <color=green>(+{statamount})</color>";
-        }
-        else if (statamount < 0)
-        {
-            return $" <color=red>({statamount})</color>";
-        }
-        else
-        {
-            return "";
-        }
-    }
-
     public int GetModAmount(StatType st)
     {
         int mod = statMods.Where(m => m.type == st).Sum(m => m.amount);
         return mod;
-    }
-
-    public string GetModString(StatType st)
-    {
-        int modamount = GetModAmount(st);
-        if (modamount > 0)
-        {
-            return $" <color=green>(+{modamount})</color>";
-        }
-        else if (modamount < 0)
-        {
-            return $" <color=red>({modamount})</color>";
-        }
-        else
-        {
-            return "";
-        }
-    }
-
-    public string GetPassiveString(StatType st)
-    {
-        int modamount = passiveMods.Where(m => m.type == st).Sum(m => m.amount); ;
-        if (modamount > 0)
-        {
-            return $" <color=#CCFF00>(+{modamount})</color>";
-        }
-        else if (modamount < 0)
-        {
-            return $" <color=#FFCC00>({modamount})</color>";
-        }
-        else
-        {
-            return "";
-        }
     }
 
     public void OnTurnStart()
@@ -262,7 +202,7 @@ public class Character : MonoBehaviour, IClickable
             ab.ResetUses();
         }
 
-        energy = stats.maxEnergy;
+        energy = stats.maxEnergy + addEnergy;
     }
 
     public void OnGeneralTurnEnd()
@@ -383,6 +323,10 @@ public class Character : MonoBehaviour, IClickable
                     break;
             }
         }
+        if (isTurn)
+        {
+            dm.UpdatePlayerUI(this);
+        }
     }
 
     public void OnAddValue(List<ValueModifier> valMods)
@@ -406,6 +350,10 @@ public class Character : MonoBehaviour, IClickable
                     break;
             }
         }
+        if (isTurn)
+        {
+            dm.UpdatePlayerUI(this);
+        }
     }
 
     public void OnHeal(int amount)
@@ -425,7 +373,7 @@ public class Character : MonoBehaviour, IClickable
 
     public void OnDeath()
     {
-        bm.OnCharacterDeath(this);
+        CharacterDied?.Invoke(this);
 
         Destroy(this.gameObject);
     }
@@ -450,7 +398,7 @@ public class Character : MonoBehaviour, IClickable
         {
             health -= damage;
         }
-        bar.UpdateView();
+        ui.UpdateHealth();
     }
 
     void Heal(int amount)
@@ -462,7 +410,7 @@ public class Character : MonoBehaviour, IClickable
         {
             health += amount;
         }
-        bar.UpdateView();
+        ui.UpdateHealth();
     }
 
     public int HighestCritCost()
@@ -477,26 +425,6 @@ public class Character : MonoBehaviour, IClickable
             }
         }
         return max;
-    }
-
-    public void DisplayActionPerm(string perm)
-    {
-        actionText.PermText(perm);
-    }
-
-    public void ActionAdd(string add)
-    {
-        actionText.AddText(add);
-    }
-
-    public void ActionDuration(int duration)
-    {
-        actionText.SetDuration(duration);
-    }
-
-    public void ActionOff()
-    {
-        actionText.PermOff();
     }
 
     public void OnLeftClick()
@@ -524,7 +452,7 @@ public class Character : MonoBehaviour, IClickable
         {
             foreach (Character ch in affectedText)
             {
-                ch.ActionOff();
+                ch.GetComponent<CharacterUI>().ActionOff();
             }
         }
     }
@@ -592,7 +520,14 @@ public class TokenTuple
             }
             else
             {
-                act.Execute(user, target, true);
+                if (act.targetSelf)
+                {
+                    act.Execute(user, user, true);
+                }
+                else
+                {
+                    act.Execute(user, target, true);
+                }
             }
         }
     }

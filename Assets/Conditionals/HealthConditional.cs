@@ -6,7 +6,7 @@ public class HealthConditional : Conditional
     public float healthPercent;
     public bool lessThan;
 
-    public override bool CheckCondition(Character user, Character target)
+    public override bool CheckCondition(Ability ability, Character user, Character target, bool isCrit)
     {
         Character toCheck = checkUser ? user : target;
         float currPercent = (float)toCheck.health / toCheck.stats.maxHealth;

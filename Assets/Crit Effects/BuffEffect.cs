@@ -17,7 +17,9 @@ public class BuffEffect : AbilityEffect
                 break;
             }
         }
-        actions.Add(new BuffAction(buffs));
+        BuffAction buffAct = new BuffAction(buffs);
+        buffAct.targetSelf = this.targetSelf;
+        actions.Add(buffAct);
     }
 
     public override string AddDescription()

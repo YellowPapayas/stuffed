@@ -17,7 +17,9 @@ public class RemoveValueEffect : AbilityEffect
                 break;
             }
         }
-        actions.Add(new RemoveValueAction(valueMods));
+        RemoveValueAction rvAct = new RemoveValueAction(valueMods);
+        rvAct.targetSelf = this.targetSelf;
+        actions.Add(rvAct);
     }
 
     public override string AddDescription()

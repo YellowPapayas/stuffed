@@ -6,11 +6,14 @@ public abstract class AccuracyAbility : Ability
     public int accuracy;
     private int finalAcc;
 
-    public override void Activate(Character user, Character target, bool isCrit)
+    public override void Activate(Character user, List<Character> targets, bool isCrit)
     {
-        base.Activate(user, target, isCrit);
+        base.Activate(user, targets, isCrit);
 
-        target.AccuracyCheck(GetFinalAccuracy(user, target, isCrit));
+        foreach (Character target in targets)
+        {
+            target.AccuracyCheck(GetFinalAccuracy(user, target, isCrit));
+        }
     }
 
     public override string FormatDescription(Character user)

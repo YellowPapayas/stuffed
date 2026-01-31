@@ -6,7 +6,9 @@ public class ActivateTokenEffect : AbilityEffect
 {
     public override void AddEffect(List<AbilityAction> actions)
     {
-        actions.Add(new ActivateTokenAction());
+        ActivateTokenAction act = new ActivateTokenAction();
+        act.targetSelf = this.targetSelf;
+        actions.Add(act);
     }
 
     public override string AddDescription()

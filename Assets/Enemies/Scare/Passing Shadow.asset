@@ -9,25 +9,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef7103591ef94cb408f0711e654afae0, type: 3}
+  m_Script: {fileID: 11500000, guid: f56815b43c76d18419212b6d9f38031e, type: 3}
   m_Name: Passing Shadow
   m_EditorClassIdentifier: 
   abilityName: Passing Shadow
   abilityImage: {fileID: 0}
   targetType: 4
   energyCost: 2
-  critCost: 3
+  critCost: 2
   cooldown: 1
   usesPerTurn: 0
   critEffect: {fileID: 11400000, guid: 36710b4ffb6a3fa41b77a540b8318983, type: 2}
   conditions: []
   accuracy: 65
-  debuffs:
-  - type: 0
-    amount: -1
-    rounds: 2
-    removeThisRound: 0
-  - type: 3
-    amount: -12
-    rounds: 2
-    removeThisRound: 0
+  effects:
+  - {fileID: 11400000, guid: 9b2f71cadaa4f3245a42cd19553077c2, type: 2}

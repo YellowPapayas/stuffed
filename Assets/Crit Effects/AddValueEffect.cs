@@ -17,7 +17,9 @@ public class AddValueEffect : AbilityEffect
                 break;
             }
         }
-        actions.Add(new AddValueAction(valueMods));
+        AddValueAction addAct = new AddValueAction(valueMods);
+        addAct.targetSelf = this.targetSelf;
+        actions.Add(addAct);
     }
 
     public override string AddDescription()
@@ -36,6 +38,6 @@ public class AddValueEffect : AbilityEffect
                 listValueMods += ", ";
             }
         }
-        return "Add " + listValueMods;
+        return "Gain " + listValueMods;
     }
 }
